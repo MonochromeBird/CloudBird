@@ -7,26 +7,27 @@ from appdirs import user_data_dir
 tools_path   = '/'.join(__file__.split('/')[:-1:])
 programdir = user_data_dir('CloudBird')
 try: mkdir(datadir)
+except: pass
 
 def generate(path: str) -> str:
-    return check_output(f'{tools_path}/sha256rec {path}', shell = True).decode()
+	return check_output(f'{tools_path}/sha256rec {path}', shell = True).decode()
 
 def save(path: str = getcwd()) -> str:
-    sum = generate(path)
-    with open(datadir+f'currentsum.{path}', 'w') as sumfile:
-        sumfile.write(sum)
-    return sum
+	sum = generate(path)
+	with open(datadir+f'currentsum.{path}', 'w') as sumfile:
+		sumfile.write(sum)
+	return sum
 
 def compare(path: str = getcwd()) -> bool:
-    if exists(datadir+f'currentsum.{path}'):
-        with open(datadir+f'currentsum.{path}') as sumfile:
-            previous_sum =  sumfile.read()
-    else: previous_sum = ""
+	if exists(datadir+f'currentsum.{path}'):
+		with open(datadir+f'currentsum.{path}') as sumfile:
+			previous_sum =  sumfile.read()
+	else: previous_sum = ""
 
-    sum = generate(path)
+	sum = generate(path)
 
-    if sum != previous_sum:
-        with open(datadir+f'currentsum.{path}', 'w') as sumfile:
-            sumfile.write(sum)
-        return True
-    else: False
+	if sum != previous_sum:
+		with open(datadir+f'currentsum.{path}', 'w') as sumfile:
+			sumfile.write(sum)
+		return True
+	else: False
