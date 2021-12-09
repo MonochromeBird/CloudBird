@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
+# [ 3th party / builtins modules ]
+from importlib import import_module as _imp
+from git import Repo
+
+# [ CloudBird modules ]
 from . import addons as _addons
 from ...utils import *
-from git import Repo
 
 name = 'git'
 

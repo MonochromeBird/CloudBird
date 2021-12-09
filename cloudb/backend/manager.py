@@ -81,14 +81,20 @@ class Clock:
 		for session in sessions:
 			self.threads[session.config['id']] = _Thread(target = session.execute)
 
-def fancyName(content: str) -> str:
-	'''Takes a Python file name and returns a fancy and usable name :)'''
-	return '.'.join(content.replace('_', ' ').replace('-', ' ').split('.')[:-1:]).capitalize()
+class displayNames:
+	def __init__(self) -> object:
+		self.addons = {self.fancyName(addon):addon for addon in self.getAddons()}
+		self.streams = {self.fancyName(stream):stream for stream in self.getStreams()}
 
-def getStreams() -> list:
-	'''Get all cloudb streams.'''
-	return next(_os.walk(_services.__path__[0]), (None, None, []))[2]
+	def fancyName(content: str, file = True) -> str:
+		'''Takes a Python file name and returns a fancy and usable name :)'''
+		result = content.replace('_', ' ').replace('-', ' ').capitalize()
+		return '.'.join(result.split('.')[:-1:]) if '.' in result and file else result
 
-def getAddons() -> list:
-	'''Get all cloudb addons.'''
-	return next(_os.walk(_addons.__path__[0]), (None, None, []))[2]
+	def getStreams() -> list:
+		'''Get all cloudb streams.'''
+		return next(_os.walk(_services.__path__[0]), (None, None, []))[2]
+
+	def getAddons() -> list:
+		'''Get all cloudb addons.'''
+		return next(_os.walk(_addons.__path__[0]), (None, None, []))[2]
