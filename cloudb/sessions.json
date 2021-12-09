@@ -1,0 +1,13 @@
+[
+	{
+		"id":"Playground",
+		"name":"Playground",
+		"stream":"sgit",
+		"path":"/home/alek/playground",
+		"url":"https://github.com/DevAlek/playground",
+		"addons":[],
+		"commit":"{date}",
+		"time":1800,
+		"priority":1
+	}
+]

@@ -6,7 +6,7 @@ from threading import Thread as _Thread
 import os as _os
 
 # [ CloudBird modules ]
-from .comparing import compare
+from .compare import compare
 from . import services
 from ..utils import *
 from .. import app
@@ -23,13 +23,12 @@ class Session:
 		self.config = config
 		
 		self.sched = _scheduler()
-		self.sched.enter(self.config['time'], self.config['priority'], self.execute)
 	
 	def execute(self) -> None:
 		date = _datetime.now()
 		self.stream.download()
 		if compare(self.stream.path):
-			self.stream.bake(eval(f'''str({self.config['commit']})'''))
+			self.stream.bake(self.config['commit'].format(date = date))
 			self.stream.upload()
 		self.sched.enter(self.config['time'], self.config['priority'], self.execute)
 		self.sched.run()
@@ -61,5 +60,6 @@ class Clock:
 	
 	def queryThreads(self, sessions: list) -> None:
 		for session in sessions:
-			self.threads[session.config['id']] = _Thread(target = session.sched.run)
+			self.threads[session.config['id']] = _Thread(target = session.execute)
+
 
