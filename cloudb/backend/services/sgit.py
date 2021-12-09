@@ -46,7 +46,7 @@ class Stream:
 		# [ Runs downloading addons ]
 		if self.addons:
 			for addon in self.addons:
-				addon.download(serm lf)
+				addon.download(self)
 
 		self.repo.git.pull()
 	
