@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from os.path import dirname as _dirname, exists as _exists, isfile as _isfile, isdir as _isdir
 from os import walk as _walk, mkdir as _mkdir, remove as _remove, sep as _sep
-from yaml import load as _load, dump as _dump
+from json import load as _load, dump as _dump
 from types import GeneratorType as _generator
 from functools import reduce as _reduce
 from shutil import rmtree as _rmtree

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from ...utils import *
-from ... import app
+from ....utils import *
+from .... import app
 
 '''
 Base addon for CloudBird.

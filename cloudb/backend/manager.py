@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # [ 3th party / builtins modules ]
+from importlib import import_module as _imp
 from datetime import datetime as _datetime
 from sched import scheduler as _scheduler
 from threading import Thread as _Thread
 import os as _os
 
 # [ CloudBird modules ]
-from .compare import compare
-from . import services
+from .compare import compare as _compare
+from . import services as _services
 from ..utils import *
 from .. import app
 
@@ -18,7 +19,8 @@ The core of CloudBird.
 class Session:
 	'''A sync task managed by CloudBird.'''
 	def __init__(self, config: dict) -> object:
-		self.streamType = eval(f'''_services.{config['stream']}''')
+		_imp(f'''.services.{config['stream']}''', __package__)
+		self.streamType = eval(f'''_services.{config['stream']}''').Stream
 		self.stream = self.streamType(config['path'], config['url'])
 		self.config = config
 		
@@ -27,7 +29,7 @@ class Session:
 	def execute(self) -> None:
 		date = _datetime.now()
 		self.stream.download()
-		if compare(self.stream.path):
+		if _compare(self.stream.path):
 			self.stream.bake(self.config['commit'].format(date = date))
 			self.stream.upload()
 		self.sched.enter(self.config['time'], self.config['priority'], self.execute)
@@ -35,12 +37,12 @@ class Session:
 		
 def loadSessions() -> dict:
 	'''Instanciate sessions'''
-	return {session['id']:Session(session) for session in load(app.appdirs.data + _os.sep + 'sessions.yaml')}
+	return {session['id']:Session(session) for session in load(app.appdir.data + _os.sep + 'sessions.json')}
 
 def createSession(info: dict) -> int:
-	if not exists(app.appdirs.data + _os.sep + 'sessions.yaml'):
-		return dump(app.appdirs.data + _os.sep + 'sessions.yaml', [info])
-	return dump(app.appdirs.data + _os.sep + 'sessions.yaml', load(app.appdirs.data + _os.sep + 'sessions.yaml') + [info])
+	if not _os.exists(app.appdir.data + _os.sep + 'sessions.json'):
+		return dump(app.appdir.data + _os.sep + 'sessions.json', [info])
+	return dump(app.appdir.data + _os.sep + 'sessions.json', load(app.appdir.data + _os.sep + 'sessions.json') + [info])
 
 class Clock:
 	def __init__(self) -> object:

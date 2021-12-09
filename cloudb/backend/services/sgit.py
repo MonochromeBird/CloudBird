@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from . import addons as _addons
+from ...utils import *
 from git import Repo
 
 name = 'git'
