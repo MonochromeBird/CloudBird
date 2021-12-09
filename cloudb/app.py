@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+import appdirs as _apd
+
+'''
+Just common information for general use.
+'''
+
+appname = 'CloudBird'
+class appdir:
+	config = _apd.user_config_dir(appname)
+	state = _apd.user_state_dir(appname)
+	cache = _apd.user_cache_dir(appname)
+	data = _apd.user_data_dir(appname)
+	log = _apd.user_log_dir(appname)

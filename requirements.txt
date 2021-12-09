@@ -1,0 +1,4 @@
+gitpython
+appdirs
+pyside6
+crypto
