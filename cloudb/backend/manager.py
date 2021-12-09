@@ -8,6 +8,7 @@ import os as _os
 
 # [ CloudBird modules ]
 from .compare import compare as _compare
+from .services import addons as _addons
 from . import services as _services
 from ..utils import *
 from .. import app
@@ -27,6 +28,7 @@ class Session:
 		self.sched = _scheduler()
 	
 	def execute(self) -> None:
+		'''Main session execute.'''
 		date = _datetime.now()
 		self.stream.download()
 		if _compare(self.stream.path):
@@ -40,28 +42,53 @@ def loadSessions() -> dict:
 	return {session['id']:Session(session) for session in load(app.appdir.data + _os.sep + 'sessions.json')}
 
 def createSession(info: dict) -> int:
+	'''Creates a session on the main session database.'''
 	if not _os.exists(app.appdir.data + _os.sep + 'sessions.json'):
 		return dump(app.appdir.data + _os.sep + 'sessions.json', [info])
 	return dump(app.appdir.data + _os.sep + 'sessions.json', load(app.appdir.data + _os.sep + 'sessions.json') + [info])
 
 class Clock:
+	'''The main clock of cloudb.'''
 	def __init__(self) -> object:
 		self.sessions = loadSessions()
 		self.threads  = {}
 		self.queryThreads(self.sessions)
 
-	def start(self) -> None:
+	def startAll(self) -> None:
+		'''Starts every thread.'''
 		for thread in self.threads:
 			self.threads[thread].start()
 	
-	def stop(self) -> None:
+	def stopAll(self) -> None:
+		'''Stops every thread.'''
 		for thread in self.threads:
 			self.threads[thread]._stop()
 			del     self.threads[thread]
 			self.queryThreads([self.sessions[thread]])
 	
+	def start(self, id: str) -> None:
+		'''Starts a single session thread.'''
+		self.threads[id].start()
+	
+	def stop(self, id: str) -> None:
+		'''Stops a single session thread.'''
+		self.threads[id]._stop()
+		del     self.threads[id]
+		self.queryThreads([self.sessions[id]])
+	
 	def queryThreads(self, sessions: list) -> None:
+		'''Create threads for sessions.'''
 		for session in sessions:
 			self.threads[session.config['id']] = _Thread(target = session.execute)
 
+def fancyName(content: str) -> str:
+	'''Takes a Python file name and returns a fancy and usable name :)'''
+	return '.'.join(content.replace('_', ' ').replace('-', ' ').split('.')[:-1:]).capitalize()
 
+def getStreams() -> list:
+	'''Get all cloudb streams.'''
+	return next(_os.walk(_services.__path__[0]), (None, None, []))[2]
+
+def getAddons() -> list:
+	'''Get all cloudb addons.'''
+	return next(_os.walk(_addons.__path__[0]), (None, None, []))[2]
