@@ -14,30 +14,36 @@
    <string>Addons</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="exit">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QListWidget" name="AddonsRepo">
+      <widget class="QTreeWidget" name="AddonsRepo">
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
+       <property name="indentation">
+        <number>0</number>
+       </property>
+       <column>
+        <property name="text">
+         <string>Unused addons</string>
+        </property>
+       </column>
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="AddonsUsed">
+      <widget class="QTreeWidget" name="AddonsUsed">
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
+       <property name="indentation">
+        <number>0</number>
+       </property>
+       <column>
+        <property name="text">
+         <string>Addons that are being used</string>
+        </property>
+       </column>
       </widget>
      </item>
      <item>
@@ -48,7 +54,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset theme="back">
+          <iconset theme="arrow-left">
            <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
@@ -59,7 +65,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset theme="go-next">
+          <iconset theme="arrow-right">
            <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
@@ -82,20 +88,13 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <pointsize>28</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="exit">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="text">
-      <string>Addons</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

@@ -12,3 +12,7 @@ class appdir:
 	cache = _apd.user_cache_dir(appname)
 	data = _apd.user_data_dir(appname)
 	log = _apd.user_log_dir(appname)
+
+for path in dir(appdir):
+	try: mkdir(eval('appdir.'+path))
+	except: pass
