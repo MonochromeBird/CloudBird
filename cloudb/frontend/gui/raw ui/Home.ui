@@ -6,14 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>344</height>
+    <width>541</width>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CloudBird</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout"/>
+  </widget>
+  <action name="actionNew_syncing_session">
+   <property name="text">
+    <string>New syncing session</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
