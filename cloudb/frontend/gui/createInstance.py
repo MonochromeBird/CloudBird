@@ -18,7 +18,7 @@ class Ui_Dialog(object):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
         Dialog.resize(505, 310)
-        sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
@@ -188,7 +188,7 @@ class Ui_Dialog(object):
         self.Stream.setPlaceholderText(QCoreApplication.translate("Dialog", u"Stream", None))
         self.Path.setPlaceholderText(QCoreApplication.translate("Dialog", u"/path/to/your/folder", None))
         self.lPath.setText(QCoreApplication.translate("Dialog", u"Path", None))
-        self.Url.setPlaceholderText(QCoreApplication.translate("Dialog", u"https://gitservice.tld/myname/myrepo", None))
+        self.Url.setPlaceholderText(QCoreApplication.translate("Dialog", u"https://service.tld/mylink", None))
         self.lUrl.setText(QCoreApplication.translate("Dialog", u"Url", None))
         self.lTime.setText(QCoreApplication.translate("Dialog", u"Time", None))
         self.Time.setSuffix(QCoreApplication.translate("Dialog", u"s", None))

@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
+    <width>504</width>
     <height>310</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -126,7 +126,7 @@
          <item row="2" column="1">
           <widget class="QLineEdit" name="Url">
            <property name="placeholderText">
-            <string>https://gitservice.tld/myname/myrepo</string>
+            <string>https://service.tld/mylink</string>
            </property>
           </widget>
          </item>
