@@ -40,8 +40,7 @@ class MainWindow(QMainWindow):
 				'Off': 'exit'
 			}
 		}
-
-		self.createObject("Playground")
+		
 		self.ui.Sessions.itemActivated.connect(self.select)
 		self.ui.Apply.pressed.connect(self.updateSession)
 		self.ui.Toggle.toggled.connect(self.toggleActive)
@@ -58,11 +57,16 @@ class MainWindow(QMainWindow):
 		item.setText(1, state.capitalize())
 		return item
 	
-	def select(self, item: QTreeWidgetItem, loadS: str = None) -> None:
-		sessions = load(_app.appdir.data + _os.sep + 'sessions.json')
+	def select(self, item: QTreeWidgetItem) -> None:
+		sessions = manager.loadSessionsMetaData()
 		self.updateStreams()
 		self.ui.SessionW.show()
-		self.currentSession = {} if loadS == None else sessions[loadS]
+
+		session = False if item.text(2) not in sessions else sessions[item.text(2)]
+
+		print(session, sessions)
+
+		self.currentSession = {} if not session else session
 		if self.currentSession != {}:
 			self.forceChanges()
 		self.updateSession()
@@ -78,12 +82,13 @@ class MainWindow(QMainWindow):
 
 	def forceChanges(self) -> None:
 		self.updateStreams()
+		self.ui.Stream.setCurrentIndex(self.ui.Stream.findText(manager.displayNames.fancyName(self.currentSession['stream'])))
 		self.ui.Priority.setValue(self.currentSession['priority'])
 		self.ui.Time.setValue(self.currentSession['time'])
 		self.ui.Name.setText(self.currentSession['name'])
 		self.ui.Path.setText(self.currentSession['path'])
 		self.ui.Url.setText(self.currentSession['url'])
-		self.ui.ID.text(self.currentSession['id'])
+		self.ui.ID.setText(self.currentSession['id'])
 
 	def toggleActive(self, toggle: bool) -> None:
 		self.currentSession['active'] = toggle
@@ -92,11 +97,6 @@ class MainWindow(QMainWindow):
 	def updateStreams(self) -> None:
 		self.ui.Stream.clear()
 		self.ui.Stream.addItems(list(map(lambda x: manager.displayNames.fancyName(x), manager.displayNames.getStreams())))
-
-
-
-
-	
 	
 if __name__ == "__main__":
 	app = QApplication(sys.argv)

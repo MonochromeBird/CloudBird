@@ -42,6 +42,10 @@ class Session:
 def loadSessions() -> dict:
 	'''Instanciate sessions'''
 	return {session['id']:Session(session) for session in load(app.appdir.data + _os.sep + 'sessions.json')}
+		
+def loadSessionsMetaData() -> dict:
+	'''Instanciate sessions'''
+	return {session['id']:session for session in load(app.appdir.data + _os.sep + 'sessions.json')}
 
 def createSession(info: dict) -> int:
 	'''Creates a session on the main session database.'''

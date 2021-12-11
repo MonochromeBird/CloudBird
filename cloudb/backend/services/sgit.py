@@ -2,6 +2,7 @@
 # [ 3th party / builtins modules ]
 from importlib import import_module as _imp
 from git import Repo
+import os as _os
 
 # [ CloudBird modules ]
 from . import addons as _addons
@@ -17,7 +18,7 @@ class Stream:
 	'''Wrapper from an API to be used on CloudBird.'''
 	def __init__(self, path: str, url: str, addons: list = []) -> object:
 		assure(path, 'A path is required.', TypeError)
-		if url: self.repo = Repo.clone_from(url, path)
+		if url and not _os.path.exists(path): self.repo = Repo.clone_from(url, path)
 		else:   self.repo = Repo(path)
 		self.name = name
 		self.path = path
