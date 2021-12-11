@@ -21,6 +21,9 @@ class MainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 
+		#self.ui.CenterLine.setVisible(False)
+		self.ui.SessionW.hide()
+
 		self.sessions = []
 		self.icons = {
 			'states':{
@@ -31,6 +34,7 @@ class MainWindow(QMainWindow):
 		}
 
 		self.createObject("Playground")
+		self.ui.Sessions.itemActivated.connect(self.select)
 
 	def createObject(self, name: str, state: str = "Online", id: str = manager.generateID()) -> None:
 		item = QTreeWidgetItem([name, state, id])
@@ -44,8 +48,10 @@ class MainWindow(QMainWindow):
 		item.setText(1, state.capitalize())
 		return item
 	
+	def select(self, item: QTreeWidgetItem) -> None:
+		self.ui.SessionW.show()
 	
-
+	
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 

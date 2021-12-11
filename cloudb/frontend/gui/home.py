@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'HomeQIhuCU.ui'
+## Form generated from reading UI file 'HomeUBxwov.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -60,9 +60,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.CenterLine)
 
-        self.Session = QVBoxLayout()
+        self.SessionW = QWidget(self.Main)
+        self.SessionW.setObjectName(u"SessionW")
+        self.Session = QVBoxLayout(self.SessionW)
         self.Session.setObjectName(u"Session")
-        self.scrollArea = QScrollArea(self.Main)
+        self.scrollArea = QScrollArea(self.SessionW)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
@@ -210,7 +212,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.Addons, 1, 0, 1, 1)
 
         self.Apply = QPushButton(self.scrollAreaWidgetContents)
-        self.Apply.setObjectName(u"pushButton")
+        self.Apply.setObjectName(u"Apply")
 
         self.gridLayout_2.addWidget(self.Apply, 2, 0, 1, 1)
 
@@ -219,7 +221,7 @@ class Ui_MainWindow(object):
         self.Session.addWidget(self.scrollArea)
 
 
-        self.horizontalLayout_2.addLayout(self.Session)
+        self.horizontalLayout_2.addWidget(self.SessionW)
 
 
         self.gridLayout.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
