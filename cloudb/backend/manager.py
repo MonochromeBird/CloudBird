@@ -4,6 +4,8 @@ from importlib import import_module as _imp
 from datetime import datetime as _datetime
 from sched import scheduler as _scheduler
 from threading import Thread as _Thread
+from random import randint as _randint
+from hashlib import md5 as _md5
 import os as _os
 
 # [ CloudBird modules ]
@@ -98,3 +100,12 @@ class displayNames:
 	def getAddons() -> list:
 		'''Get all cloudb addons.'''
 		return next(_os.walk(_addons.__path__[0]), (None, None, []))[2]
+
+def generateID() -> str:
+	id = _md5(_randint(100000, 999999).to_bytes(6, 'little')).hexdigest()
+	for session in load(app.appdir.data+_os.sep+'sessions.json'):
+		if session['id'] == id:
+			del id
+			del session
+			return generateID()
+	return id

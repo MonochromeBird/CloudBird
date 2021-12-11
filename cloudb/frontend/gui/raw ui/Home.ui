@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
+    <width>772</width>
     <height>464</height>
    </rect>
   </property>
@@ -78,6 +78,11 @@
           <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>
@@ -99,27 +104,20 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>317</width>
-             <height>392</height>
+             <width>344</width>
+             <height>423</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="3" column="0">
+             <widget class="QTextEdit" name="Output"/>
+            </item>
             <item row="0" column="0">
              <layout class="QFormLayout" name="formLayout">
               <item row="0" column="0">
                <widget class="QLabel" name="lName">
                 <property name="text">
                  <string>Name </string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="Name">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="placeholderText">
-                 <string>Name</string>
                 </property>
                </widget>
               </item>
@@ -153,20 +151,6 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="lUrl">
-                <property name="text">
-                 <string>Url</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="Url">
-                <property name="placeholderText">
-                 <string>https://service.tld/mylink</string>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
@@ -182,12 +166,26 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset theme="document-open">
-                    <normaloff>.</normaloff>.</iconset>
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/icons/folder.svg</normaloff>:/icons/folder.svg</iconset>
                   </property>
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="lUrl">
+                <property name="text">
+                 <string>Url</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="Url">
+                <property name="placeholderText">
+                 <string>https://service.tld/mylink</string>
+                </property>
+               </widget>
               </item>
               <item row="4" column="0">
                <widget class="QLabel" name="lTime">
@@ -200,6 +198,12 @@
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
                  <widget class="QSpinBox" name="Time">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="suffix">
                    <string>s</string>
                   </property>
@@ -269,15 +273,44 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QLineEdit" name="Name">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Name</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="Toggle">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/icons/turnon.svg</normaloff>:/icons/turnon.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
-            </item>
-            <item row="2" column="0">
-             <widget class="QTextEdit" name="Output"/>
             </item>
             <item row="1" column="0">
              <widget class="QPushButton" name="Addons">
               <property name="text">
                <string>Manage plugins</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="Apply">
+              <property name="text">
+               <string>Apply</string>
               </property>
              </widget>
             </item>
@@ -319,8 +352,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="list-add">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/list-add.svg</normaloff>:/icons/list-add.svg</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -361,8 +394,11 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="list-remove">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/list-remove.svg</normaloff>:/icons/list-remove.svg</iconset>
+           </property>
+           <property name="shortcut">
+            <string/>
            </property>
            <property name="checkable">
             <bool>false</bool>
@@ -397,8 +433,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="document-save-as">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/document-save-as.svg</normaloff>:/icons/document-save-as.svg</iconset>
            </property>
            <property name="shortcut">
             <string>Ctrl+S</string>
@@ -430,8 +466,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="document-open">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/document-open.svg</normaloff>:/icons/document-open.svg</iconset>
            </property>
            <property name="shortcut">
             <string>Ctrl+O</string>
@@ -470,8 +506,8 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="info">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/help.svg</normaloff>:/icons/help.svg</iconset>
            </property>
            <property name="shortcut">
             <string>F1</string>
@@ -489,6 +525,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

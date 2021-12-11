@@ -1,0 +1,22 @@
+<RCC>
+  <qresource>
+    <file>icons/list-add.svg</file>
+    <file>icons/list-remove.svg</file>
+    <file>icons/document-save-as.svg</file>
+    <file>icons/document-open.svg</file>
+    <file>icons/help.svg</file>
+    <file>icons/folder.svg</file>
+    <file>icons/warning.svg</file>
+    <file>icons/network-error.svg</file>
+    <file>icons/network-offline.svg</file>
+    <file>icons/network.svg</file>
+    <file>icons/turnon.svg</file>
+    <file>icons/exit.svg</file>
+    <file>icons/home.svg</file>
+    <file>icons/go-next.svg</file>
+    <file>icons/go-previous.svg</file>
+    <file>icons/wait.svg</file>
+    <file>icons/document-save.svg</file>
+    <file>icons/edit-find.svg</file>
+  </qresource>
+</RCC>

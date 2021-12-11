@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'Home.ui'
+## Form generated from reading UI file 'HomeQIhuCU.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -12,12 +12,13 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from . import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(676, 464)
+        MainWindow.resize(772, 464)
         self.Main = QWidget(MainWindow)
         self.Main.setObjectName(u"Main")
         self.gridLayout = QGridLayout(self.Main)
@@ -66,20 +67,20 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 317, 392))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 344, 423))
         self.gridLayout_2 = QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.Output = QTextEdit(self.scrollAreaWidgetContents)
+        self.Output.setObjectName(u"Output")
+
+        self.gridLayout_2.addWidget(self.Output, 3, 0, 1, 1)
+
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(u"formLayout")
         self.lName = QLabel(self.scrollAreaWidgetContents)
         self.lName.setObjectName(u"lName")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lName)
-
-        self.Name = QLineEdit(self.scrollAreaWidgetContents)
-        self.Name.setObjectName(u"Name")
-
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.Name)
 
         self.lID = QLabel(self.scrollAreaWidgetContents)
         self.lID.setObjectName(u"lID")
@@ -99,16 +100,6 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.lPath)
 
-        self.lUrl = QLabel(self.scrollAreaWidgetContents)
-        self.lUrl.setObjectName(u"lUrl")
-
-        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.lUrl)
-
-        self.Url = QLineEdit(self.scrollAreaWidgetContents)
-        self.Url.setObjectName(u"Url")
-
-        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.Url)
-
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.Path = QLineEdit(self.scrollAreaWidgetContents)
@@ -119,18 +110,23 @@ class Ui_MainWindow(object):
         self.GetPath = QPushButton(self.scrollAreaWidgetContents)
         self.GetPath.setObjectName(u"GetPath")
         icon = QIcon()
-        iconThemeName = u"document-open"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon = QIcon.fromTheme(iconThemeName)
-        else:
-            icon.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-        
+        icon.addFile(u":/icons/folder.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.GetPath.setIcon(icon)
 
         self.horizontalLayout_5.addWidget(self.GetPath)
 
 
         self.formLayout.setLayout(2, QFormLayout.FieldRole, self.horizontalLayout_5)
+
+        self.lUrl = QLabel(self.scrollAreaWidgetContents)
+        self.lUrl.setObjectName(u"lUrl")
+
+        self.formLayout.setWidget(3, QFormLayout.LabelRole, self.lUrl)
+
+        self.Url = QLineEdit(self.scrollAreaWidgetContents)
+        self.Url.setObjectName(u"Url")
+
+        self.formLayout.setWidget(3, QFormLayout.FieldRole, self.Url)
 
         self.lTime = QLabel(self.scrollAreaWidgetContents)
         self.lTime.setObjectName(u"lTime")
@@ -141,6 +137,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.Time = QSpinBox(self.scrollAreaWidgetContents)
         self.Time.setObjectName(u"Time")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Time.sizePolicy().hasHeightForWidth())
+        self.Time.setSizePolicy(sizePolicy)
         self.Time.setMaximum(1000000000)
         self.Time.setSingleStep(60)
         self.Time.setValue(1800)
@@ -156,9 +157,6 @@ class Ui_MainWindow(object):
 
         self.Priority = QSpinBox(self.scrollAreaWidgetContents)
         self.Priority.setObjectName(u"Priority")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Priority.sizePolicy().hasHeightForWidth())
         self.Priority.setSizePolicy(sizePolicy)
 
@@ -185,18 +183,36 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(5, QFormLayout.FieldRole, self.Stream)
 
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.Name = QLineEdit(self.scrollAreaWidgetContents)
+        self.Name.setObjectName(u"Name")
+
+        self.horizontalLayout_6.addWidget(self.Name)
+
+        self.Toggle = QPushButton(self.scrollAreaWidgetContents)
+        self.Toggle.setObjectName(u"Toggle")
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/turnon.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Toggle.setIcon(icon1)
+
+        self.horizontalLayout_6.addWidget(self.Toggle)
+
+
+        self.formLayout.setLayout(0, QFormLayout.FieldRole, self.horizontalLayout_6)
+
 
         self.gridLayout_2.addLayout(self.formLayout, 0, 0, 1, 1)
-
-        self.Output = QTextEdit(self.scrollAreaWidgetContents)
-        self.Output.setObjectName(u"Output")
-
-        self.gridLayout_2.addWidget(self.Output, 2, 0, 1, 1)
 
         self.Addons = QPushButton(self.scrollAreaWidgetContents)
         self.Addons.setObjectName(u"Addons")
 
         self.gridLayout_2.addWidget(self.Addons, 1, 0, 1, 1)
+
+        self.Apply = QPushButton(self.scrollAreaWidgetContents)
+        self.Apply.setObjectName(u"pushButton")
+
+        self.gridLayout_2.addWidget(self.Apply, 2, 0, 1, 1)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
@@ -222,16 +238,11 @@ class Ui_MainWindow(object):
         font = QFont()
         font.setPointSize(10)
         font.setBold(True)
-        font.setWeight(75)
+        font.setWeight(QFont.Weight(75))
         self.Add.setFont(font)
-        icon1 = QIcon()
-        iconThemeName = u"list-add"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon1 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon1.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.Add.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/list-add.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Add.setIcon(icon2)
         self.Add.setIconSize(QSize(16, 16))
         self.Add.setCheckable(False)
         self.Add.setAutoExclusive(False)
@@ -249,14 +260,9 @@ class Ui_MainWindow(object):
 
         self.Remove = QPushButton(self.frame)
         self.Remove.setObjectName(u"Remove")
-        icon2 = QIcon()
-        iconThemeName = u"list-remove"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon2 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon2.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.Remove.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/list-remove.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Remove.setIcon(icon3)
         self.Remove.setCheckable(False)
         self.Remove.setAutoDefault(False)
         self.Remove.setFlat(True)
@@ -274,14 +280,9 @@ class Ui_MainWindow(object):
         self.Save.setObjectName(u"Save")
         self.Save.setTabletTracking(False)
         self.Save.setAutoFillBackground(False)
-        icon3 = QIcon()
-        iconThemeName = u"document-save-as"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon3 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.Save.setIcon(icon3)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/document-save-as.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Save.setIcon(icon4)
         self.Save.setCheckable(False)
         self.Save.setAutoDefault(False)
         self.Save.setFlat(True)
@@ -297,7 +298,9 @@ class Ui_MainWindow(object):
 
         self.Open = QPushButton(self.frame)
         self.Open.setObjectName(u"Open")
-        self.Open.setIcon(icon)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/document-open.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Open.setIcon(icon5)
         self.Open.setCheckable(False)
         self.Open.setAutoDefault(False)
         self.Open.setFlat(True)
@@ -316,16 +319,11 @@ class Ui_MainWindow(object):
         font1 = QFont()
         font1.setPointSize(14)
         font1.setBold(True)
-        font1.setWeight(75)
+        font1.setWeight(QFont.Weight(75))
         self.Help.setFont(font1)
-        icon4 = QIcon()
-        iconThemeName = u"info"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon4 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
-        
-        self.Help.setIcon(icon4)
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/help.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.Help.setIcon(icon6)
         self.Help.setFlat(True)
 
         self.horizontalLayout_3.addWidget(self.Help)
@@ -352,29 +350,35 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"CloudBird", None))
         ___qtreewidgetitem = self.Sessions.headerItem()
+        ___qtreewidgetitem.setText(2, QCoreApplication.translate("MainWindow", u"ID", None));
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"Status", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Name", None));
         self.lName.setText(QCoreApplication.translate("MainWindow", u"Name ", None))
-        self.Name.setText("")
-        self.Name.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Name", None))
         self.lID.setText(QCoreApplication.translate("MainWindow", u"ID", None))
         self.ID.setText(QCoreApplication.translate("MainWindow", u"0xdeadbeef", None))
         self.lPath.setText(QCoreApplication.translate("MainWindow", u"Path", None))
-        self.lUrl.setText(QCoreApplication.translate("MainWindow", u"Url", None))
-        self.Url.setPlaceholderText(QCoreApplication.translate("MainWindow", u"https://service.tld/mylink", None))
         self.Path.setPlaceholderText(QCoreApplication.translate("MainWindow", u"/path/to/folder", None))
         self.GetPath.setText("")
+        self.lUrl.setText(QCoreApplication.translate("MainWindow", u"Url", None))
+        self.Url.setPlaceholderText(QCoreApplication.translate("MainWindow", u"https://service.tld/mylink", None))
         self.lTime.setText(QCoreApplication.translate("MainWindow", u"Time", None))
         self.Time.setSuffix(QCoreApplication.translate("MainWindow", u"s", None))
         self.lPriority.setText(QCoreApplication.translate("MainWindow", u"Priority", None))
         self.lStream.setText(QCoreApplication.translate("MainWindow", u"Stream", None))
         self.Stream.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Stream", None))
+        self.Name.setText("")
+        self.Name.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Name", None))
+        self.Toggle.setText("")
         self.Addons.setText(QCoreApplication.translate("MainWindow", u"Manage plugins", None))
+        self.Apply.setText(QCoreApplication.translate("MainWindow", u"Apply", None))
         self.Add.setText("")
 #if QT_CONFIG(shortcut)
         self.Add.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
 #endif // QT_CONFIG(shortcut)
         self.Remove.setText("")
+#if QT_CONFIG(shortcut)
+        self.Remove.setShortcut("")
+#endif // QT_CONFIG(shortcut)
         self.Save.setText("")
 #if QT_CONFIG(shortcut)
         self.Save.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
