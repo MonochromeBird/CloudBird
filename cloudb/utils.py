@@ -3,6 +3,7 @@ from os.path import dirname as _dirname, exists as _exists, isfile as _isfile, i
 from os import walk as _walk, mkdir as _mkdir, remove as _remove, sep as _sep
 from json import load as _load, dump as _dump
 from types import GeneratorType as _generator
+from functools import lru_cache as _cache
 from functools import reduce as _reduce
 from shutil import rmtree as _rmtree
 '''
@@ -17,6 +18,7 @@ def fileFromDir(path: str) -> str:
 	'''Being honest I don't remember why the fudge I did this but ok.'''
 	return path.replace(_dirname(path)+'/', '')
 
+@_cache
 def load(path: str) -> dict:
 	'''Fast loading for yaml.'''
 	with open(path) as file:
