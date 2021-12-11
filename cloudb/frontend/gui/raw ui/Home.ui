@@ -78,55 +78,6 @@
           <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
-        <item>
-         <property name="text">
-          <string>Playground</string>
-         </property>
-         <property name="icon">
-          <iconset theme="network">
-           <normaloff>.</normaloff>.</iconset>
-         </property>
-         <property name="text">
-          <string>Online</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-         <property name="icon">
-          <iconset theme="networ">
-           <normaloff>.</normaloff>.</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Secret One</string>
-         </property>
-         <property name="icon">
-          <iconset theme="network-offline">
-           <normaloff>.</normaloff>.</iconset>
-         </property>
-         <property name="text">
-          <string>Offline</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Config</string>
-         </property>
-         <property name="icon">
-          <iconset theme="network-error">
-           <normaloff>.</normaloff>.</iconset>
-         </property>
-         <property name="text">
-          <string>Error</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
@@ -165,7 +116,10 @@
               <item row="0" column="1">
                <widget class="QLineEdit" name="Name">
                 <property name="text">
-                 <string>Playground</string>
+                 <string/>
+                </property>
+                <property name="placeholderText">
+                 <string>Name</string>
                 </property>
                </widget>
               </item>
@@ -270,7 +224,14 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QSpinBox" name="Priority"/>
+                   <widget class="QSpinBox" name="Priority">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -285,6 +246,12 @@
               </item>
               <item row="5" column="1">
                <widget class="QComboBox" name="Stream">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -296,6 +263,9 @@
                 </property>
                 <property name="minimumContentsLength">
                  <number>0</number>
+                </property>
+                <property name="placeholderText">
+                 <string>Stream</string>
                 </property>
                </widget>
               </item>
@@ -500,7 +470,11 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset theme="info"/>
+            <iconset theme="info">
+             <normaloff>.</normaloff>.</iconset>
+           </property>
+           <property name="shortcut">
+            <string>F1</string>
            </property>
            <property name="flat">
             <bool>true</bool>
