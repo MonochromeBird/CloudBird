@@ -40,10 +40,11 @@ class MainWindow(QMainWindow):
 				'Off': 'exit'
 			}
 		}
-		
+
 		self.ui.Sessions.itemActivated.connect(self.select)
 		self.ui.Apply.pressed.connect(self.updateSession)
 		self.ui.Toggle.toggled.connect(self.toggleActive)
+		self.initSessions(True)
 
 	def createObject(self, name: str, state: str = "Online", id: str = manager.generateID()) -> None:
 		item = QTreeWidgetItem([name, state, id])
@@ -64,14 +65,14 @@ class MainWindow(QMainWindow):
 
 		session = False if item.text(2) not in sessions else sessions[item.text(2)]
 
-		print(session, sessions)
-
 		self.currentSession = {} if not session else session
 		if self.currentSession != {}:
 			self.forceChanges()
 		self.updateSession()
 	
 	def updateSession(self) -> None:
+		new = load(_app.appdir.data+_os.sep+'sessions.json')
+		new.remove(self.currentSession)
 		self.currentSession['stream'] = self.ui.Stream.currentText()
 		self.currentSession['priority'] = self.ui.Priority.value()
 		self.currentSession['time'] = self.ui.Time.value()
@@ -79,6 +80,10 @@ class MainWindow(QMainWindow):
 		self.currentSession['path'] = self.ui.Path.text()
 		self.currentSession['url'] = self.ui.Url.text()
 		self.currentSession['id'] = self.ui.ID.text()
+		new.append(self.currentSession)
+		print(new)
+		dump(_app.appdir.data+_os.sep+'sessions.json', new)
+		del new
 
 	def forceChanges(self) -> None:
 		self.updateStreams()
@@ -98,6 +103,20 @@ class MainWindow(QMainWindow):
 		self.ui.Stream.clear()
 		self.ui.Stream.addItems(list(map(lambda x: manager.displayNames.fancyName(x), manager.displayNames.getStreams())))
 	
+	def initSessions(self, metadatamode: bool = False) -> None:
+		# TODO: MAKE THE NON-METADATA MODE.
+		if not _os.path.exists(_app.appdir.data+_os.sep+'sessions.json'):
+			dump(_app.appdir.data+_os.sep+'sessions.json', [])
+		
+		if len(read(_app.appdir.data+_os.sep+'sessions.json').decode()) == 0:
+			return
+		
+		if metadatamode:
+			sessions = manager.loadSessionsMetaData()
+			for session in sessions:
+				self.createObject(sessions[session]['name'], sessions[session]['state'], sessions[session]['id'])
+
+
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 

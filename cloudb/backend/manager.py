@@ -107,9 +107,11 @@ class displayNames:
 
 def generateID() -> str:
 	id = _md5(_randint(100000, 999999).to_bytes(6, 'little')).hexdigest()
-	for session in load(app.appdir.data+_os.sep+'sessions.json'):
-		if session['id'] == id:
-			del id
-			del session
-			return generateID()
+	try:
+		for session in load(app.appdir.data+_os.sep+'sessions.json'):
+			if session['id'] == id:
+				del id
+				del session
+				return generateID()
+	except: pass
 	return id
