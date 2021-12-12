@@ -1,5 +1,7 @@
 <RCC>
   <qresource>
+    <file>icons/red-close.svg</file>
+    <file>icons/dialog-cancel.svg</file>
     <file>icons/list-add.svg</file>
     <file>icons/list-remove.svg</file>
     <file>icons/document-save-as.svg</file>

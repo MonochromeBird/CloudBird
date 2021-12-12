@@ -22,6 +22,7 @@ The core of CloudBird.
 class Session:
 	'''A sync task managed by CloudBird.'''
 	def __init__(self, config: dict) -> object:
+		config['stream'] = displayNames.importName(config['stream'])
 		_imp(f'''.services.{config['stream']}''', __package__)
 		self.streamType = eval(f'''_services.{config['stream']}''').Stream
 		self.stream = self.streamType(config['path'], config['url'])
@@ -41,17 +42,18 @@ class Session:
 		
 def loadSessions() -> dict:
 	'''Instanciate sessions'''
-	return {session['id']:Session(session) for session in load(app.appdir.data + _os.sep + 'sessions.json')}
+	return {session['id']:Session(session) for session in load(app.appdir.data + _os.sep + 'sessions.json', [])}
 		
 def loadSessionsMetaData() -> dict:
 	'''Instanciate sessions'''
-	return {session['id']:session for session in load(app.appdir.data + _os.sep + 'sessions.json')}
+	try: return {session['id']:session for session in load(app.appdir.data + _os.sep + 'sessions.json', [])}
+	except: return {}
 
 def createSession(info: dict) -> int:
 	'''Creates a session on the main session database.'''
 	if not _os.exists(app.appdir.data + _os.sep + 'sessions.json'):
 		return dump(app.appdir.data + _os.sep + 'sessions.json', [info])
-	return dump(app.appdir.data + _os.sep + 'sessions.json', load(app.appdir.data + _os.sep + 'sessions.json') + [info])
+	return dump(app.appdir.data + _os.sep + 'sessions.json', load(app.appdir.data + _os.sep + 'sessions.json', []) + [info])
 
 class Clock:
 	'''The main clock of cloudb.'''
@@ -97,6 +99,10 @@ class displayNames:
 		result = content.replace('_', ' ').replace('-', ' ').capitalize()
 		return '.'.join(result.split('.')[:-1:]) if '.' in result and file else result
 
+	def importName(content: str, file = True) -> str:
+		'''Takes a Python file name and returns a fancy and usable name :)'''
+		return content.replace(' ','_').lower()
+
 	def getStreams() -> list:
 		'''Get all cloudb streams.'''
 		return next(_os.walk(_services.__path__[0]), (None, None, []))[2]
@@ -108,7 +114,7 @@ class displayNames:
 def generateID() -> str:
 	id = _md5(_randint(100000, 999999).to_bytes(6, 'little')).hexdigest()
 	try:
-		for session in load(app.appdir.data+_os.sep+'sessions.json'):
+		for session in load(app.appdir.data+_os.sep+'sessions.json', []):
 			if session['id'] == id:
 				del id
 				del session

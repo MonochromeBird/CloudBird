@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from os.path import dirname as _dirname, exists as _exists, isfile as _isfile, isdir as _isdir
 from os import walk as _walk, mkdir as _mkdir, remove as _remove, sep as _sep
+from json.decoder import JSONDecodeError as _JSONDecodeError
 from json import load as _load, dump as _dump
 from types import GeneratorType as _generator
 from functools import lru_cache as _cache
@@ -18,16 +19,22 @@ def fileFromDir(path: str) -> str:
 	'''Being honest I don't remember why the fudge I did this but ok.'''
 	return path.replace(_dirname(path)+'/', '')
 
-@_cache
-def load(path: str) -> dict:
-	'''Fast loading for yaml.'''
-	with open(path) as file:
+def load(path: str, assureIfNotExists: any = {}) -> dict:
+	'''Fast loading for data notation.'''
+	try:
+		with open(path) as file:
 			return _load(file)
+	except _JSONDecodeError:
+		dump(path, assureIfNotExists)
+		load(path)
+	except FileNotFoundError:
+		dump(path, assureIfNotExists)
+		load(path)
 
 def dump(path: str, value: dict) -> int:
-	'''Fast dumping for yaml.'''
+	'''Fast dumping for data notation.'''
 	with open(path, 'w') as file:
-		_dump(file, value)
+		_dump(value, file)
 
 def buildTree(root: str) -> dict:
 	'''Build a tree of a path. Thanks to Andrew Clark.'''

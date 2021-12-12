@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # [ 3th party / builtins modules ]
 from importlib import import_module as _imp
+from shutil import rmtree as _rmtree
 from git import Repo
 import os as _os
 
@@ -18,7 +19,9 @@ class Stream:
 	'''Wrapper from an API to be used on CloudBird.'''
 	def __init__(self, path: str, url: str, addons: list = []) -> object:
 		assure(path, 'A path is required.', TypeError)
-		if url and not _os.path.exists(path): self.repo = Repo.clone_from(url, path)
+		if url and not _os.path.exists(path+_os.sep+'.git'):
+			_rmtree(path)
+			self.repo = Repo.clone_from(url, path)
 		else:   self.repo = Repo(path)
 		self.name = name
 		self.path = path
