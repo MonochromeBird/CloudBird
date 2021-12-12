@@ -1,10 +1,45 @@
-<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-    <style
-        type="text/css"
-        id="current-color-scheme">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="red-close.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="12.62117"
+     inkscape:cx="14.855992"
+     inkscape:cy="15.965239"
+     inkscape:window-width="1366"
+     inkscape:window-height="710"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5" />
+  <style
+     type="text/css"
+     id="current-color-scheme">
         .ColorScheme-NegativeText {
             color:#da4453;
         }
     </style>
-    <path d="M16 4A12 12 0 0 0 4 16a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 16 4m-5.293 6L16 15.293 21.293 10s.727.716.707.707L16.707 16 22 21.293s-.701.706-.707.707L16 16.707 10.707 22c.001-.005-.707-.707-.707-.707L15.293 16 10 10.707c.02.001.707-.707.707-.707" class="ColorScheme-NegativeText" fill="currentColor"/>
+  <path
+     d="M 16.057653,0.19202899 A 15.797221,15.827363 0 0 0 0.2604331,16.019391 15.797221,15.827363 0 0 0 16.057653,31.846754 15.797221,15.827363 0 0 0 31.854875,16.019391 15.797221,15.827363 0 0 0 16.057653,0.19202899 M 9.0897633,8.1057103 16.057653,15.086896 23.025545,8.1057103 c 0,0 0.957047,0.9443659 0.93072,0.9324954 l -6.967892,6.9811853 6.967892,6.981187 c 0,0 -0.922823,0.931175 -0.93072,0.932494 l -6.967892,-6.981185 -6.9678897,6.981185 c 0.00132,-0.0066 -0.9307196,-0.932494 -0.9307196,-0.932494 L 15.126934,16.019391 8.1590437,9.0382057 c 0.026328,0.00132 0.9307196,-0.9324954 0.9307196,-0.9324954"
+     class="ColorScheme-NegativeText"
+     fill="currentColor"
+     id="path3"
+     style="stroke-width:1.31769" />
 </svg>
