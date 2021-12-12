@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'HomeHiTNwB.ui'
+## Form generated from reading UI file 'HomeeDlxWi.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -146,11 +146,6 @@ class Ui_MainWindow(object):
         self.ErrorFrame.setFrameShadow(QFrame.Raised)
         self.gridLayout_3 = QGridLayout(self.ErrorFrame)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.ErrorMessage = QLabel(self.ErrorFrame)
-        self.ErrorMessage.setObjectName(u"ErrorMessage")
-
-        self.gridLayout_3.addWidget(self.ErrorMessage, 0, 0, 1, 1)
-
         self.CloseError = QPushButton(self.ErrorFrame)
         self.CloseError.setObjectName(u"CloseError")
         sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
@@ -165,6 +160,11 @@ class Ui_MainWindow(object):
         self.CloseError.setFlat(True)
 
         self.gridLayout_3.addWidget(self.CloseError, 0, 1, 1, 1)
+
+        self.ErrorMessage = QLabel(self.ErrorFrame)
+        self.ErrorMessage.setObjectName(u"ErrorMessage")
+
+        self.gridLayout_3.addWidget(self.ErrorMessage, 0, 0, 1, 1)
 
 
         self.horizontalLayout.addWidget(self.ErrorFrame)
@@ -211,7 +211,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 334, 472))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 334, 465))
         self.gridLayout_2 = QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.formLayout = QFormLayout()
@@ -376,12 +376,16 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7.addWidget(self.SessionName)
 
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer)
+
         self.CloseTab = QPushButton(self.scrollAreaWidgetContents)
         self.CloseTab.setObjectName(u"CloseTab")
         sizePolicy.setHeightForWidth(self.CloseTab.sizePolicy().hasHeightForWidth())
         self.CloseTab.setSizePolicy(sizePolicy)
         self.CloseTab.setIcon(icon5)
-        self.CloseTab.setIconSize(QSize(25, 25))
+        self.CloseTab.setIconSize(QSize(16, 16))
         self.CloseTab.setFlat(True)
 
         self.horizontalLayout_7.addWidget(self.CloseTab)
@@ -445,11 +449,11 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.Help.setShortcut(QCoreApplication.translate("MainWindow", u"F1", None))
 #endif // QT_CONFIG(shortcut)
-        self.ErrorMessage.setText(QCoreApplication.translate("MainWindow", u"Error: Error message.", None))
         self.CloseError.setText("")
 #if QT_CONFIG(shortcut)
         self.CloseError.setShortcut(QCoreApplication.translate("MainWindow", u"Alt+Backspace", None))
 #endif // QT_CONFIG(shortcut)
+        self.ErrorMessage.setText(QCoreApplication.translate("MainWindow", u"Error: Error message.", None))
         ___qtreewidgetitem = self.Sessions.headerItem()
         ___qtreewidgetitem.setText(2, QCoreApplication.translate("MainWindow", u"ID", None));
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"Status", None));
