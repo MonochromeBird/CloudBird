@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # [ 3th party / builtins modules ]
+from shutil import rmtree as _rmtree, move as _move
 from importlib import import_module as _imp
-from shutil import rmtree as _rmtree
+from random import randint as _randint
 from git import Repo
 import os as _os
 
 # [ CloudBird modules ]
 from . import addons as _addons
 from ...utils import *
+from ... import app
 
 name = 'git'
 
@@ -19,10 +21,26 @@ class Stream:
 	'''Wrapper from an API to be used on CloudBird.'''
 	def __init__(self, path: str, url: str, addons: list = []) -> object:
 		assure(path, 'A path is required.', TypeError)
-		if url and not _os.path.exists(path+_os.sep+'.git'):
-			_rmtree(path)
-			self.repo = Repo.clone_from(url, path)
-		else:   self.repo = Repo(path)
+		try: _os.mkdir(path)
+		except: pass
+
+		try:
+
+			if url and not _os.path.exists(path+_os.sep+'.git'):
+				cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
+				Repo.clone_from(url, cache)
+
+				for thing in _os.listdir(cache):
+					try:    _move(cache+_os.sep+thing, path)
+					except: pass
+				_rmtree(cache)
+				
+		except Exception as error:
+			_rmtree(cache)
+			raise error
+		
+		self.repo = Repo(path)
+
 		self.name = name
 		self.path = path
 		self.url  = url

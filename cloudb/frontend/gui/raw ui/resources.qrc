@@ -1,5 +1,7 @@
 <RCC>
   <qresource>
+    <file>icons/info.svg</file>
+    <file>icons/green-info.svg</file>
     <file>icons/dialog-cancel.svg</file>
     <file>icons/red-close.svg</file>
     <file>icons/list-add.svg</file>

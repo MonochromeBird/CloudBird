@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
 
 		self.showSessionsDetails(0)
 		self.ui.ErrorZone.hide()
-
+		self.ui.InfoZone.hide()
 
 		self.sessions = {}
 		self.currentSession = {}
@@ -62,9 +62,13 @@ class MainWindow(QMainWindow):
 			self.ui.SessionW.hide()
 			self.ui.CenterLine.hide()
 		
-	def showError(self, message: str, errorType: str = 'error', errorNum: int = 0) -> None:
+	def error(self, message: str, errorType: str = 'error', errorNum: int = 0) -> None:
 		self.ui.ErrorZone.show()
 		self.ui.ErrorMessage.setText(f'{errorType} ({errorNum}): {message}')
+
+	def info(self, message: str, infoType: str = 'error') -> None:
+		self.ui.InfoZone.show()
+		self.ui.InfoMessage.setText(f'{infoType}: {message}')
 
 	def newSession(self) -> None:
 		self.createObject('<no name>', 'waiting')
@@ -122,7 +126,7 @@ class MainWindow(QMainWindow):
 			self.forceChanges()
 			self.initSessions()
 		else:
-			self.showError(valid[0], valid[1], valid[2])
+			self.error(valid[0], valid[1], valid[2])
 		del valid
 
 	def forceChanges(self) -> None:
@@ -157,13 +161,13 @@ class MainWindow(QMainWindow):
 		sessions = manager.loadSessionsMetaData()
 		for session in sessions:
 			try: self.createObject(sessions[session]['name'], sessions[session]['state'], sessions[session]['id'])
-			except Exception as error: self.showError(f'There are unknow sessions that may are corrupted. [{error}]', 'Session load error', 500)
+			except Exception as error: self.error(f'There are unknow sessions that may are corrupted. [{error}]', 'Session load error', 500)
 		
 		if not metadatamode:
 			try: self.sessions = manager.loadSessions()
 			except Exception as error:
 				tb = sys.exc_info()[2]
-				self.showError(error.__class__.__name__+': '+str(error.with_traceback(tb)), 'Failed to initialize sessions', 501)
+				self.error(error.__class__.__name__+': '+str(error.with_traceback(tb)), 'Failed to initialize sessions', 501)
 				print(error.__class__.__name__+': '+str(error.with_traceback(tb)))
 
 
