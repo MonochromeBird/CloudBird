@@ -2,12 +2,14 @@
 # [ 3th party / builtins modules ]
 from shutil import rmtree as _rmtree, move as _move
 from importlib import import_module as _imp
+from threading import Thread as _Thread
 from random import randint as _randint
-from git import Repo
+from git import Repo as _Repo
 import os as _os
 
 # [ CloudBird modules ]
 from . import addons as _addons
+from .. import manager
 from ...utils import *
 from ... import app
 
@@ -19,19 +21,34 @@ Git support for CloudBird.
 
 class Stream:
 	'''Wrapper from an API to be used on CloudBird.'''
-	def __init__(self, path: str, url: str, addons: list = []) -> object:
-		assure(path, 'A path is required.', TypeError)
+	def __init__(self, path: str, url: str, session: dict, addons: list = []) -> object:
+		assure(path, f'A path is required. Error on session {session["id"]} "{session["name"]}"', TypeError)
 		try: _os.mkdir(path)
 		except: pass
 
-		try:
+		self.session = session
+		self.repo = None
+		self.name = name
+		self.path = path
+		self.name = 'git'
+		self.url  = url
 
-			if url and not _os.path.exists(path+_os.sep+'.git'):
+		self.addons = [eval(f'_addons.{addon}') for addon in addons]
+
+		self.session['state'] = 'waiting'
+		manager.editSession(self.session['id'], self.session)
+		self.loadingThread = _Thread(target = self.init)
+		self.loadingThread.start()
+
+
+	def init(self) -> None:
+		try:
+			if self.url and not _os.path.exists(self.path+_os.sep+'.git'):
 				cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
-				Repo.clone_from(url, cache)
+				_Repo.clone_from(self.url, cache)
 
 				for thing in _os.listdir(cache):
-					try:    _move(cache+_os.sep+thing, path)
+					try:    _move(cache+_os.sep+thing, self.path)
 					except: pass
 				_rmtree(cache)
 				
@@ -39,18 +56,15 @@ class Stream:
 			_rmtree(cache)
 			raise error
 		
-		self.repo = Repo(path)
+		self.repo = _Repo(self.path)
+		self.session['state'] = 'online'
+		manager.editSession(self.session['id'], self.session)
+		exit()
 
-		self.name = name
-		self.path = path
-		self.url  = url
-		self.name = 'git'
-
-		self.addons = [eval(f'_addons.{addon}') for addon in addons]
-
-	
 	def bake(self, commit: str) -> None:
 		'''Prepares the upload.'''
+		if self.repo == None: return
+
 		# [ Runs baking addons ]
 		if self.addons:
 			for addon in self.addons:
@@ -61,6 +75,8 @@ class Stream:
 	
 	def upload(self) -> None:
 		'''Commit changes to cloud.'''
+		if self.repo == None: return
+
 		# [ Runs uploading addons ]
 		if self.addons:
 			for addon in self.addons:
@@ -70,10 +86,11 @@ class Stream:
 	
 	def download(self) -> None:
 		'''Download changes from cloud.'''
+		if self.repo == None: return
+
 		# [ Runs downloading addons ]
 		if self.addons:
 			for addon in self.addons:
 				addon.download(self)
 
 		self.repo.git.pull()
-	

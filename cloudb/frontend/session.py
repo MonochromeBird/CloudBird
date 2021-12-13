@@ -2,6 +2,7 @@
 # -*- enconding:utf-8 -*-
 
 # [ 3th party Libraries ]
+from threading import Thread
 from random import randint
 from hashlib import md5
 import os as _os
@@ -27,8 +28,9 @@ class MainWindow(QMainWindow):
 		self.ui.ErrorZone.hide()
 		self.ui.InfoZone.hide()
 
-		self.sessions = {}
 		self.currentSession = {}
+		self.currentInfo = 0
+		self.sessions = {}
 
 		self.icons = {
 			'states':{
@@ -66,18 +68,30 @@ class MainWindow(QMainWindow):
 		self.ui.ErrorZone.show()
 		self.ui.ErrorMessage.setText(f'{errorType} ({errorNum}): {message}')
 
-	def info(self, message: str, infoType: str = 'error') -> None:
+	def info(self, message: str, infoType: str = 'error', infoNum: int = 0) -> None:
 		self.ui.InfoZone.show()
 		self.ui.InfoMessage.setText(f'{infoType}: {message}')
+		self.currentInfo = infoNum
+	
+	def closeInfo(self, info: int) -> None:
+		if info == self.currentInfo: self.ui.InfoZone.hide()
 
 	def newSession(self) -> None:
 		self.createObject('<no name>', 'waiting')
 
-	def createObject(self, name: str, state: str = "Online", id: str = manager.generateID()) -> None:
-		item = QTreeWidgetItem([name, state, id])
-		self.setStatus(item, state)
-		self.ui.Sessions.addTopLevelItems([item])
-		self.sessions[id] = item
+	def createObject(self, name: str, state: str = "Online", id: str = '') -> None:
+		if not id: id = manager.generateID()
+		
+		shownSessions = self.getShownSessions()
+		shownSessions = {s.text(2):s for s in shownSessions}
+		if not (id in shownSessions):
+			item = QTreeWidgetItem([name, state, id])
+			self.setStatus(item, state)
+			self.ui.Sessions.addTopLevelItems([item])
+			self.sessions[id] = item
+		else:
+			self.setStatus(shownSessions[id], state)
+			shownSessions[id].setText(0, name)
 	
 	def setStatus(self, item: QTreeWidgetItem, state: str) -> QTreeWidgetItem:
 		if state.capitalize() not in self.icons['states']: raise IndexError(f'Invalid state "{state}"')
@@ -91,11 +105,9 @@ class MainWindow(QMainWindow):
 		self.showSessionsDetails()
 
 		session = False if item.text(2) not in sessions else sessions[item.text(2)]
-		self.ui.SessionName.setText(item.text(0))
-
-		self.currentSession = {} if not session else session
-		if self.currentSession != {}:
-			self.forceChanges()
+		
+		self.currentSession = manager.baseSession if not session else session
+		self.forceChanges()
 		self.updateSession(item.text(2))
 	
 	def updateSession(self, id: bool = False) -> None:
@@ -133,16 +145,15 @@ class MainWindow(QMainWindow):
 		self.updateStreams()
 		self.ui.Stream.setCurrentIndex(self.ui.Stream.findText(manager.displayNames.fancyName(self.currentSession['stream'])))
 		self.ui.Priority.setValue(self.currentSession['priority'])
-		self.ui.SessionName.setText(self.currentSession['name'])
+		self.ui.SessionName.setText(self.currentSession['name'] if self.currentSession['name'] else 'New Session')
 		self.ui.Time.setValue(self.currentSession['time'])
 		self.ui.Name.setText(self.currentSession['name'])
 		self.ui.Path.setText(self.currentSession['path'])
 		self.ui.Url.setText(self.currentSession['url'])
 		self.ui.ID.setText(self.currentSession['id'])
 
-
 	def toggleActive(self, toggle: bool) -> None:
-		self.currentSession['active'] = toggle
+		self.currentSession['state'] = 'Online' if toggle else 'Offline'
 		self.ui.Toggle.setIcon(QIcon(QPixmap(':/icons/'+self.icons['power'][('On' if toggle else 'Off')]+'.svg')))
 
 	def updateStreams(self) -> None:
@@ -150,8 +161,6 @@ class MainWindow(QMainWindow):
 		self.ui.Stream.addItems(list(map(lambda x: manager.displayNames.fancyName(x), manager.displayNames.getStreams())))
 	
 	def initSessions(self, metadatamode: bool = False) -> None:
-		# TODO: MAKE THE NON-METADATA MODE.
-		self.ui.Sessions.clear()
 		if not _os.path.exists(_app.appdir.data+_os.sep+'sessions.json'):
 			dump(_app.appdir.data+_os.sep+'sessions.json', [])
 		
@@ -159,17 +168,27 @@ class MainWindow(QMainWindow):
 			return
 		
 		sessions = manager.loadSessionsMetaData()
-		for session in sessions:
+		names = list(sessions.keys())
+		names.sort()
+
+		for session in names:
 			try: self.createObject(sessions[session]['name'], sessions[session]['state'], sessions[session]['id'])
-			except Exception as error: self.error(f'There are unknow sessions that may are corrupted. [{error}]', 'Session load error', 500)
+			except Exception as error: self.error(f'There are unknow sessions that may be corrupted. [{error}]', 'Session load error', 500)
 		
+		del names
+
 		if not metadatamode:
+			self.info('This can take some time.', 'Updating sessions', 500)
 			try: self.sessions = manager.loadSessions()
 			except Exception as error:
 				tb = sys.exc_info()[2]
 				self.error(error.__class__.__name__+': '+str(error.with_traceback(tb)), 'Failed to initialize sessions', 501)
 				print(error.__class__.__name__+': '+str(error.with_traceback(tb)))
-
+			self.closeInfo(500)
+	
+	def getShownSessions(self) -> list:
+		root = self.ui.Sessions.invisibleRootItem()
+		return [root.child(child) for child in range(root.childCount())]
 
 	def validateInput(self) -> bool:
 		return True

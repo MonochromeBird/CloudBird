@@ -19,13 +19,25 @@ from .. import app
 The core of CloudBird.
 '''
 
+baseSession = {
+	'name':     '',
+	'id':       '',
+	'state':    'waiting',
+	'path':     '', 
+	'url':      '',
+	'stream':   '',
+	'time':     1800,
+	'priority': 0,
+	'addons':   []
+}
+
 class Session:
 	'''A sync task managed by CloudBird.'''
 	def __init__(self, config: dict) -> object:
 		config['stream'] = displayNames.importName(config['stream'])
 		_imp(f'''.services.{config['stream']}''', __package__)
 		self.streamType = eval(f'''_services.{config['stream']}''').Stream
-		self.stream = self.streamType(config['path'], config['url'])
+		self.stream = self.streamType(config['path'], config['url'], config)
 		self.config = config
 		
 		self.sched = _scheduler()
@@ -121,3 +133,15 @@ def generateID() -> str:
 				return generateID()
 	except: pass
 	return id
+
+def editSession(id: str, content: dict) -> None:
+	new = load(app.appdir.data+_os.sep+'sessions.json', [])
+	for session in range(len(new)):
+		if new[session]['id'] == id:
+			del new[session]
+			break
+	
+	new.append(content)
+	dump(app.appdir.data+_os.sep+'sessions.json', new)
+	del new
+	
