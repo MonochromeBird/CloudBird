@@ -7,12 +7,13 @@ from random import randint
 from hashlib import md5
 import os as _os
 import sys
+import re
 
 # [ The uic (graphical user interface) ]
 from .gui.home import *
 
 # [ Backend ]
-from ..backend import manager
+from ..backend import manager, validate
 from .. import app as _app
 from ..utils import *
 
@@ -105,14 +106,15 @@ class MainWindow(QMainWindow):
 		self.showSessionsDetails()
 
 		session = False if item.text(2) not in sessions else sessions[item.text(2)]
-		
+
 		self.currentSession = manager.baseSession if not session else session
 		self.forceChanges()
-		self.updateSession(item.text(2))
+		self.updateSession(item.text(2), True)
 	
-	def updateSession(self, id: bool = False) -> None:
+	def updateSession(self, id: bool = False, ignoreValidation = False) -> None:
 		if id: self.ui.ID.setText(id)
-		valid =  self.validateInput()
+		if not ignoreValidation: valid = self.validateInput()
+		else: valid = True
 		if valid:
 			new = load(_app.appdir.data+_os.sep+'sessions.json', [])
 			
@@ -129,16 +131,14 @@ class MainWindow(QMainWindow):
 			self.currentSession['path'] = self.ui.Path.text()
 			self.currentSession['url'] = self.ui.Url.text()
 			self.currentSession['id'] = self.ui.ID.text()
-			self.currentSession['state'] = 'Online' if self.ui.Toggle.toggled else 'Offline'
+			self.currentSession['state'] = 'online' if self.ui.Toggle.toggled else 'offline'
 			
-			if self.currentSession['stream']: new.append(self.currentSession)
+			if not ignoreValidation: new.append(self.currentSession)
 			dump(_app.appdir.data+_os.sep+'sessions.json', new)
 			del new
 			
 			self.forceChanges()
 			self.initSessions()
-		else:
-			self.error(valid[0], valid[1], valid[2])
 		del valid
 
 	def forceChanges(self) -> None:
@@ -159,7 +159,7 @@ class MainWindow(QMainWindow):
 	def updateStreams(self) -> None:
 		self.ui.Stream.clear()
 		self.ui.Stream.addItems(list(map(lambda x: manager.displayNames.fancyName(x), manager.displayNames.getStreams())))
-	
+
 	def initSessions(self, metadatamode: bool = False) -> None:
 		if not _os.path.exists(_app.appdir.data+_os.sep+'sessions.json'):
 			dump(_app.appdir.data+_os.sep+'sessions.json', [])
@@ -191,6 +191,16 @@ class MainWindow(QMainWindow):
 		return [root.child(child) for child in range(root.childCount())]
 
 	def validateInput(self) -> bool:
+		if not validate.links(self.ui.Url.text()):
+			self.error('That doesn\'t looks like a valid url.', 'Invalid url', 301)
+			return False
+		if not self.ui.Path.text():
+			self.error('Please, insert a path.', 'Path required', 302)
+			return False
+		if not self.ui.Stream.text():
+			self.error('Please, choose a stream for your session.', 'Stream required', 303)
+			return False
+		self.ui.ErrorZone.hide()
 		return True
 
 if __name__ == "__main__":

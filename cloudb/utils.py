@@ -19,17 +19,17 @@ def fileFromDir(path: str) -> str:
 	'''Being honest I don't remember why the fudge I did this but ok.'''
 	return path.replace(_dirname(path)+'/', '')
 
-def load(path: str, assureIfNotExists: any = {}) -> dict:
+def load(path: str, assureIfNotExists: any = []) -> dict:
 	'''Fast loading for data notation.'''
 	try:
 		with open(path) as file:
 			return _load(file)
 	except _JSONDecodeError:
 		dump(path, assureIfNotExists)
-		load(path)
+		return load(path)
 	except FileNotFoundError:
 		dump(path, assureIfNotExists)
-		load(path)
+		return load(path)
 
 def dump(path: str, value: dict) -> int:
 	'''Fast dumping for data notation.'''
