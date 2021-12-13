@@ -1,5 +1,9 @@
 <RCC>
   <qresource>
+    <file>icons/download.svg</file>
+    <file>icons/downloading.svg</file>
+    <file>icons/upload.svg</file>
+    <file>icons/folder-download.svg</file>
     <file>icons/info.svg</file>
     <file>icons/green-info.svg</file>
     <file>icons/dialog-cancel.svg</file>

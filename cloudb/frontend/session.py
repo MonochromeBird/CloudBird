@@ -2,6 +2,7 @@
 # -*- enconding:utf-8 -*-
 
 # [ 3th party Libraries ]
+from datetime import datetime
 from threading import Thread
 from random import randint
 from hashlib import md5
@@ -17,6 +18,7 @@ from ..backend import manager, validate
 from .. import app as _app
 from ..utils import *
 
+updateDelay = 300
 
 # [ Qt class ]
 class MainWindow(QMainWindow):
@@ -49,9 +51,15 @@ class MainWindow(QMainWindow):
 		self.ui.Sessions.itemActivated.connect(self.select)
 		self.ui.Apply.pressed.connect(self.updateSession)
 		self.ui.Toggle.toggled.connect(self.toggleActive)
+		self.ui.Download.pressed.connect(self.download)
 		self.ui.GetPath.pressed.connect(self.setPath)
 		self.ui.Add.pressed.connect(self.newSession)
+		self.ui.Upload.pressed.connect(self.upload)
 		self.initSessions()
+
+		self.updateTimer = QTimer()
+		self.updateTimer.start(updateDelay)
+		self.updateTimer.timeout.connect(self.updateSessionsState)
 
 	def setPath(self) -> None:
 		path = QFileDialog.getExistingDirectory(self, 'Choose the path to use in this session')
@@ -116,14 +124,6 @@ class MainWindow(QMainWindow):
 		if not ignoreValidation: valid = self.validateInput()
 		else: valid = True
 		if valid:
-			new = load(_app.appdir.data+_os.sep+'sessions.json', [])
-			
-			for session in range(len(new)):
-			
-				if new[session]['id'] == (id if id else self.currentSession['id']):
-					del new[session]
-					break
-
 			self.currentSession['stream'] = self.ui.Stream.currentText()
 			self.currentSession['priority'] = self.ui.Priority.value()	
 			self.currentSession['time'] = self.ui.Time.value()
@@ -133,9 +133,15 @@ class MainWindow(QMainWindow):
 			self.currentSession['id'] = self.ui.ID.text()
 			self.currentSession['state'] = 'online' if self.ui.Toggle.toggled else 'offline'
 			
-			if not ignoreValidation: new.append(self.currentSession)
-			dump(_app.appdir.data+_os.sep+'sessions.json', new)
-			del new
+			if not ignoreValidation: 
+				new = load(_app.appdir.data+_os.sep+'sessions.json', [])
+				for session in range(len(new)):	
+					if new[session]['id'] == (id if id else self.currentSession['id']):
+						del new[session]
+						new.append(self.currentSession)
+						break
+				dump(_app.appdir.data+_os.sep+'sessions.json', new)
+				del new
 			
 			self.forceChanges()
 			self.initSessions()
@@ -197,11 +203,29 @@ class MainWindow(QMainWindow):
 		if not self.ui.Path.text():
 			self.error('Please, insert a path.', 'Path required', 302)
 			return False
-		if not self.ui.Stream.text():
+		if not self.ui.Stream.currentText():
 			self.error('Please, choose a stream for your session.', 'Stream required', 303)
 			return False
 		self.ui.ErrorZone.hide()
 		return True
+	
+	def updateSessionsState(self) -> None:
+		self.initSessions(True)
+		self.updateTimer.start(updateDelay)
+	
+	def download(self) -> None:
+		if self.currentSession['id'] not in self.sessions:
+			return self.info('Canceling download because the selected session its not instanced.')
+		session = self.sessions[self.currentSession['id']].stream
+		session.download()
+
+	def upload(self) -> None:
+		if self.currentSession['id'] not in self.sessions:
+			return self.info('Canceling upload because the selected session its not instanced.')
+		session = self.sessions[self.currentSession['id']].stream
+		session.bake(str(datetime.now()))
+		session.upload()
+	
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)

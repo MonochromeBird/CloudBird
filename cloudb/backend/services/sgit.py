@@ -53,6 +53,7 @@ class Stream:
 				_rmtree(cache)
 				
 		except Exception as error:
+			# I could handle this for the case that the path doesn't exists but this is supposed to raise a error anyway :shrugy:
 			_rmtree(cache)
 			raise error
 		

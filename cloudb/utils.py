@@ -24,9 +24,6 @@ def load(path: str, assureIfNotExists: any = []) -> dict:
 	try:
 		with open(path) as file:
 			return _load(file)
-	except _JSONDecodeError:
-		dump(path, assureIfNotExists)
-		return load(path)
 	except FileNotFoundError:
 		dump(path, assureIfNotExists)
 		return load(path)

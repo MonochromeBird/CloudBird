@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import appdirs as _apd
+from os import mkdir
 
 '''
 Just common information for general use.
@@ -14,5 +15,6 @@ class appdir:
 	log = _apd.user_log_dir(appname)
 
 for path in dir(appdir):
-	try: mkdir(eval('appdir.'+path))
-	except: pass
+	if '_' in path: continue
+	try:    mkdir(eval('appdir.'+path))
+	except Exception as err: print(f'Skiping creating appdir\t{path}\tbecause\t{err}.') 
