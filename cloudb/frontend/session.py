@@ -60,7 +60,6 @@ class MainWindow(QMainWindow):
 		self.ui.GetPath.pressed.connect(self.setPath)
 		self.ui.Add.pressed.connect(self.newSession)
 		self.ui.Upload.pressed.connect(self.upload)
-		self.initSessions()
 
 		self.updateTimer = QTimer()
 		self.updateTimer.start(updateDelay)
@@ -276,7 +275,6 @@ class MainWindow(QMainWindow):
 		del new
 
 		self.ui.Sessions.clear()
-		self.initSessions(True)
 
 	
 

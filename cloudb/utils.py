@@ -2,11 +2,12 @@
 from os.path import dirname as _dirname, exists as _exists, isfile as _isfile, isdir as _isdir
 from os import walk as _walk, mkdir as _mkdir, remove as _remove, sep as _sep
 from json.decoder import JSONDecodeError as _JSONDecodeError
+from shutil import rmtree as _rmtree, move as _move
 from json import load as _load, dump as _dump
 from types import GeneratorType as _generator
 from functools import lru_cache as _cache
 from functools import reduce as _reduce
-from shutil import rmtree as _rmtree
+from . import app
 '''
 CloudBird utils
 '''
@@ -32,6 +33,7 @@ def dump(path: str, value: dict) -> int:
 	'''Fast dumping for data notation.'''
 	with open(path, 'w') as file:
 		_dump(value, file)
+		return file.truncate()
 
 def buildTree(root: str) -> dict:
 	'''Build a tree of a path. Thanks to Andrew Clark.'''
