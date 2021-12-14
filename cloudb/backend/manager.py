@@ -20,15 +20,16 @@ The core of CloudBird.
 '''
 
 baseSession = {
-	'name':     '',
-	'id':       '',
-	'state':    'waiting',
-	'path':     '', 
-	'url':      '',
-	'stream':   '',
-	'time':     1800,
-	'priority': 0,
-	'addons':   []
+	'name':      '',
+	'id':        '',
+	'state':     'waiting',
+	'path':      '', 
+	'url':       '',
+	'stream':    '',
+	'time':      1800,
+	'priority':  0,
+	'addons':    [],
+	'backstage': 'online'
 }
 
 class Session:

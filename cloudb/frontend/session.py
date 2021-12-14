@@ -29,10 +29,11 @@ class MainWindow(QMainWindow):
 		self.ui.setupUi(self)
 
 		self.showSessionsDetails(0)
+		self.ui.SearchZone.hide()
 		self.ui.ErrorZone.hide()
 		self.ui.InfoZone.hide()
 
-		self.currentSession = {}
+		self.currentSession = manager.baseSession
 		self.currentInfo = 0
 		self.sessions = {}
 
@@ -50,7 +51,9 @@ class MainWindow(QMainWindow):
 			}
 		}
 
+		self.ui.ClearOutput.pressed.connect(self.deleteLogFile)
 		self.ui.Sessions.itemActivated.connect(self.select)
+		self.ui.Remove.pressed.connect(self.removeSession)
 		self.ui.Apply.pressed.connect(self.updateSession)
 		self.ui.Toggle.toggled.connect(self.toggleActive)
 		self.ui.Download.pressed.connect(self.download)
@@ -62,6 +65,9 @@ class MainWindow(QMainWindow):
 		self.updateTimer = QTimer()
 		self.updateTimer.start(updateDelay)
 		self.updateTimer.timeout.connect(self.updateSessionsState)
+
+		self.openSearch = QShortcut(QKeySequence("Ctrl+F"), self)
+		self.openSearch.activated.connect(self.ui.SearchZone.show)
 
 	def setPath(self) -> None:
 		path = QFileDialog.getExistingDirectory(self, 'Choose the path to use in this session')
@@ -133,10 +139,10 @@ class MainWindow(QMainWindow):
 			self.currentSession['path'] = self.ui.Path.text()
 			self.currentSession['url'] = self.ui.Url.text()
 			self.currentSession['id'] = self.ui.ID.text()
-			self.currentSession['state'] = 'online' if self.ui.Toggle.toggled else 'offline'
-			
+			self.currentSession['state'] = 'online' if self.ui.Toggle.isChecked() else 'offline'
+			self.currentSession['backstage'] = self.currentSession['state']
+
 			if not ignoreValidation:
-				print('ye')
 				new = load(_app.appdir.data+_os.sep+'sessions.json', [])
 				for session in range(len(new)):	
 					if new[session]['id'] == (id if id else self.currentSession['id']):
@@ -162,7 +168,6 @@ class MainWindow(QMainWindow):
 		self.ui.ID.setText(self.currentSession['id'])
 
 	def toggleActive(self, toggle: bool) -> None:
-		self.currentSession['state'] = 'Online' if toggle else 'Offline'
 		self.ui.Toggle.setIcon(QIcon(QPixmap(':/icons/'+self.icons['power'][('On' if toggle else 'Off')]+'.svg')))
 
 	def updateStreams(self) -> None:
@@ -215,10 +220,13 @@ class MainWindow(QMainWindow):
 	def updateSessionsState(self) -> None:
 		if 'id' in tuple(self.currentSession.keys()):
 			if self.currentSession['id'] in self.sessions:
-				before = self.ui.Output.verticalScrollBar().value()
-				self.ui.Output.setText(read(_app.appdir.log + _os.sep + f'{self.currentSession["id"]}.log').decode())
-				self.ui.Output.verticalScrollBar().setValue(before)
-				del before
+				thing = read(_app.appdir.log + _os.sep + f'{self.currentSession["id"]}.log').decode()
+				if thing != self.ui.Output.toPlainText():
+					before = self.ui.Output.verticalScrollBar().value()
+					self.ui.Output.setText(thing)
+					self.ui.Output.verticalScrollBar().setValue(before)
+					del before
+					del thing
 		self.initSessions(True)
 		self.updateTimer.start(updateDelay)
 	
@@ -244,6 +252,32 @@ class MainWindow(QMainWindow):
 		session.bake(str(datetime.now()))
 		session.upload()
 		exit()
+	
+	def deleteLogFile(self) -> None:
+		try: write(_app.appdir.log + _os.sep + f'{self.currentSession["id"]}.log', ''.encode())
+		except: pass
+	
+	def removeSession(self) -> None:
+		if self.currentSession['id'] == '':
+			return self.info('Select a session, please.', 'Could not remove session', 200)
+		elif self.currentSession['id'] not in self.sessions:
+			return self.info('The selected session is not instanciated.', 'Could not remove session', 201)
+	
+		self.closeInfo(200)
+		self.closeInfo(201)
+
+		del self.sessions[self.currentSession['id']]
+		new = load(_app.appdir.data+_os.sep+'sessions.json', [])
+		for session in range(len(new)):	
+			if new[session]['id'] == self.currentSession['id']:
+				del new[session]
+				break
+		dump(_app.appdir.data+_os.sep+'sessions.json', new)
+		del new
+
+		self.ui.Sessions.clear()
+		self.initSessions(True)
+
 	
 
 if __name__ == "__main__":

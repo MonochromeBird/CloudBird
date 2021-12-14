@@ -47,8 +47,10 @@ def buildTree(root: str) -> dict:
 
 def read(path: str) -> bytes:
 	'''Fast reader for file.'''
-	with open(path, 'rb') as file:
-		return file.read()
+	try:
+		with open(path, 'rb') as file:
+			return file.read()
+	except: return ''.encode()
 
 def write(path: str, content: bytes) -> int:
 	'''Fast writer for file.'''

@@ -48,6 +48,9 @@ class Stream:
 	def init(self) -> None:
 		try:
 			if self.url and not _os.path.exists(self.path+_os.sep+'.git'):
+				_.info(f'Downloading at {_datetime.now()}.')
+				self.session['state'] = 'downloading'
+				manager.editSession(self.session['id'], self.session)
 				cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
 				_Repo.clone_from(self.url, cache)
 
@@ -55,14 +58,17 @@ class Stream:
 					try:    _move(cache+_os.sep+thing, self.path)
 					except: pass
 				_rmtree(cache)
+				_.info(f'Done downloading at {_datetime.now()}.')
+
 				
 		except Exception as error:
 			# I could handle this for the case that the path doesn't exists but this is supposed to raise a error anyway :shrugy:
 			_rmtree(cache)
+			_.error(f'Failed downloading at {_datetime.now()}. Details: {error}')
 			raise error
 		
 		self.repo = _Repo(self.path)
-		self.session['state'] = 'online'
+		self.session['state'] = self.session['backstage']
 		manager.editSession(self.session['id'], self.session)
 		_.info('Done initing.')
 		exit()
@@ -87,7 +93,7 @@ class Stream:
 			self.session['state'] = 'error'
 			return manager.editSession(self.session['id'], self.session)
 		
-		self.session['state'] = 'online'
+		self.session['state'] = self.session['backstage']
 		manager.editSession(self.session['id'], self.session)
 		_.info('Done baking.')
 	
@@ -110,7 +116,7 @@ class Stream:
 			self.session['state'] = 'error'
 			return manager.editSession(self.session['id'], self.session)
 		
-		self.session['state'] = 'online'
+		self.session['state'] = self.session['backstage']
 		manager.editSession(self.session['id'], self.session)
 		_.info(f'Done uploading at {_datetime.now()}.')
 	
@@ -133,6 +139,6 @@ class Stream:
 			self.session['state'] = 'error'
 			return manager.editSession(self.session['id'], self.session)
 		
-		self.session['state'] = 'online'
+		self.session['state'] = self.session['backstage']
 		manager.editSession(self.session['id'], self.session)
 		_.info(f'Done downloading at {_datetime.now()}.')
