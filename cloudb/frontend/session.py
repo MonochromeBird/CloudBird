@@ -2,6 +2,7 @@
 # -*- enconding:utf-8 -*-
 
 # [ 3th party Libraries ]
+from functools import lru_cache
 from datetime import datetime
 from threading import Thread
 from random import randint
@@ -37,13 +38,14 @@ class MainWindow(QMainWindow):
 
 		self.icons = {
 			'states':{
-				'Online':  'network',
-				'Offline': 'network-offline',
-				'Error':   'network-error',
-				'Waiting': 'wait'},
+				'Online':      'network',
+				'Offline':     'network-offline',
+				'Error':       'network-error',
+				'Waiting':     'wait',
+				'Downloading': 'downloading'},
 			
 			'power':{
-				'On': 'turnon',
+				'On':  'turnon',
 				'Off': 'exit'
 			}
 		}
@@ -103,8 +105,8 @@ class MainWindow(QMainWindow):
 			shownSessions[id].setText(0, name)
 	
 	def setStatus(self, item: QTreeWidgetItem, state: str) -> QTreeWidgetItem:
-		if state.capitalize() not in self.icons['states']: raise IndexError(f'Invalid state "{state}"')
-		item.setIcon(0, QIcon(QPixmap(f':/icons/{self.icons["states"][state.capitalize()]}.svg')))
+		if state.capitalize().replace('Uploading','Waiting').replace('Baking','Waiting') not in self.icons['states']: raise IndexError(f'Invalid state "{state}"')
+		item.setIcon(0, QIcon(QPixmap(f':/icons/{self.icons["states"][state.capitalize().replace("Uploading","Waiting").replace("Baking","Waiting")]}.svg')))
 		item.setText(1, state.capitalize())
 		return item
 	
@@ -133,13 +135,14 @@ class MainWindow(QMainWindow):
 			self.currentSession['id'] = self.ui.ID.text()
 			self.currentSession['state'] = 'online' if self.ui.Toggle.toggled else 'offline'
 			
-			if not ignoreValidation: 
+			if not ignoreValidation:
+				print('ye')
 				new = load(_app.appdir.data+_os.sep+'sessions.json', [])
 				for session in range(len(new)):	
 					if new[session]['id'] == (id if id else self.currentSession['id']):
 						del new[session]
-						new.append(self.currentSession)
 						break
+				new.append(self.currentSession)
 				dump(_app.appdir.data+_os.sep+'sessions.json', new)
 				del new
 			
@@ -210,6 +213,12 @@ class MainWindow(QMainWindow):
 		return True
 	
 	def updateSessionsState(self) -> None:
+		if 'id' in tuple(self.currentSession.keys()):
+			if self.currentSession['id'] in self.sessions:
+				before = self.ui.Output.verticalScrollBar().value()
+				self.ui.Output.setText(read(_app.appdir.log + _os.sep + f'{self.currentSession["id"]}.log').decode())
+				self.ui.Output.verticalScrollBar().setValue(before)
+				del before
 		self.initSessions(True)
 		self.updateTimer.start(updateDelay)
 	
@@ -217,14 +226,24 @@ class MainWindow(QMainWindow):
 		if self.currentSession['id'] not in self.sessions:
 			return self.info('Canceling download because the selected session its not instanced.')
 		session = self.sessions[self.currentSession['id']].stream
-		session.download()
+		thread = Thread(target = self._download, args = (session,), daemon = True) 
+		thread.start()
 
 	def upload(self) -> None:
 		if self.currentSession['id'] not in self.sessions:
 			return self.info('Canceling upload because the selected session its not instanced.')
 		session = self.sessions[self.currentSession['id']].stream
+		thread = Thread(target = self._upload, args = (session,), daemon = True)
+		thread.start()
+	
+	def _download(self, session) -> None:
+		session.download()
+		exit()
+	
+	def _upload(self, session) -> None:
 		session.bake(str(datetime.now()))
 		session.upload()
+		exit()
 	
 
 if __name__ == "__main__":
