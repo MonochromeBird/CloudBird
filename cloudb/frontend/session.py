@@ -67,6 +67,8 @@ class MainWindow(QMainWindow):
 		}
 
 		self.ui.ClearOutput.pressed.connect(self.deleteLogFile)
+		self.ui.Open.pressed.connect(self.openSessionFromJson)
+		self.ui.Save.pressed.connect(self.saveSessionAsJson)
 		self.ui.Remove.pressed.connect(self.removeSession)
 		self.ui.Sessions.itemClicked.connect(self.select)
 		self.ui.Apply.pressed.connect(self.updateSession)
@@ -292,6 +294,31 @@ class MainWindow(QMainWindow):
 			del new
 
 			self.ui.Sessions.clear()	
+	
+	def saveSessionAsJson(self) -> None:
+		if self.currentSession['id'] == '':
+			return self.info('Select a session, please.', 'Could not save session', 200)
+		self.updateSession(False, True)
+		dump(QFileDialog.getSaveFileName(self, 'Enter a file name for saving your session', self.currentSession['name'] + '.json' if not self.currentSession['name'].endswith('.json') else self.currentSession['name'], 'JSON files (*.json)')[0], self.currentSession)
+
+	def openSessionFromJson(self) -> None:
+		try: 
+			files = QFileDialog.getOpenFileNames(self, 'Select session files to open', '', 'JSON files (*.json)')[0]
+			self.ui.SessionW.hide()
+			for file in files:
+				try:    file = load(file)
+				except: raise Exception("Not a valid json file.")
+
+				if list(manager.baseSession.keys()) != list(file.keys()):
+					raise Exception(f'Not a session file.')
+				
+				if manager.createSession(file) == 700:
+					self.info(f'''Session “{file['name']}” of id “{file['id']}” already exists''', 'Ignoring session')
+	
+		except Exception as error:
+			self.error(str(error), 'Could not load sessions', 510)
+
+
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)

@@ -33,9 +33,12 @@ def load(path: str, assureIfNotExists: any = []) -> dict:
 	except FileNotFoundError:
 		dump(path, assureIfNotExists)
 		return assureIfNotExists
-	except _JSONDecodeError: 
-		with open (app.appdir.data+_sep+'jsonbackup'+_sep+path.replace(_sep, '_')) as file:
-			return _load(file)
+	except _JSONDecodeError as err:
+		try:
+			with open (app.appdir.data+_sep+'jsonbackup'+_sep+path.replace(_sep, '_')) as file:
+				return _load(file)
+		except:
+			raise err
 
 def dump(path: str, value: dict) -> int:
 	'''Fast dumping for data notation.'''

@@ -64,9 +64,12 @@ def loadSessionsMetaData() -> dict:
 
 def createSession(info: dict) -> int:
 	'''Creates a session on the main session database.'''
-	if not _os.exists(app.appdir.data + _os.sep + 'sessions.json'):
+	if not _os.path.exists(app.appdir.data + _os.sep + 'sessions.json'):
 		return dump(app.appdir.data + _os.sep + 'sessions.json', [info])
-	return dump(app.appdir.data + _os.sep + 'sessions.json', load(app.appdir.data + _os.sep + 'sessions.json', []) + [info])
+	data = load(app.appdir.data + _os.sep + 'sessions.json', [])
+	if not info['id'] in list(map(lambda x: x['id'], data)):
+		return dump(app.appdir.data + _os.sep + 'sessions.json', data + [info])
+	return 700
 
 class Clock:
 	'''The main clock of cloudb.'''
