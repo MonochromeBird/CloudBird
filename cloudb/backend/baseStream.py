@@ -38,7 +38,7 @@ class BaseStream:
 				manager.changeState('downloading', self.session)
 				cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
 				
-				self.getFromCloud()
+				self.getFromCloud(cache)
 
 				for thing in _os.listdir(cache):
 					try:    _move(cache+_os.sep+thing, self.session['path'])
@@ -69,7 +69,7 @@ class BaseStream:
 				addon.bake(self)
 
 		# [ Bakes and handles errors that can potentially happen ]
-		try: self.bakingProtocol()
+		try: self.bakingProtocol(commit)
 		except Exception as err:
 			_.error(f'Error while baking at {_datetime.now()}. Details: {err}')
 			return manager.changeState('error', self.session)

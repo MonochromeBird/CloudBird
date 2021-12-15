@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+from random import randint as _randint
 from git import Repo as _Repo
 from ..baseStream import *
+import shutil as _sh
 import os as _os
 
 '''
@@ -15,7 +17,7 @@ class Stream(BaseStream):
 	hasMetadata(self) -> bool:
 		Called when the stream needs to know if it has to download the metadata from the url.
 	
-	getFromCloud(self) -> None:
+	getFromCloud(self, cache: str) -> None:
 		Called when the path doesn't have a metadata.
 	
 	initializeStream(self) -> None:
@@ -24,7 +26,7 @@ class Stream(BaseStream):
 	downloadProtocol(self) -> None:
 		The process of downloading cloud content to the stream's path.
 	
-	bakingProtocol(self) -> None:
+	bakingProtocol(self, message: str) -> None:
 		The process before the upload.
 	
 	uploadProtocol(self) -> None:
@@ -38,7 +40,7 @@ class Stream(BaseStream):
 		'''Called when the stream needs to know if it has to download the metadata from the url.'''
 		return not _os.path.exists(self.session['path']+_os.sep+'.git')
 
-	def getFromCloud(self) -> None:
+	def getFromCloud(self, cache: str) -> None:
 		'''Called when the path doesn't have a metadata.'''
 		self.repo = _Repo.clone_from(self.session['url'], cache)
 		
@@ -48,20 +50,38 @@ class Stream(BaseStream):
 	
 	def downloadProtocol(self) -> None:
 		'''The process of downloading cloud content to the stream's path.'''
-		try:
+		try: self.repo.git.pull()
+		except:
 			self.repo.git.fetch('--all')
 			self.repo.git.reset('--hard', 'master')
-		except:
-			self.repo.git.pull()
 	
-	def bakingProtocol(self) -> None:
+	def bakingProtocol(self, message: str) -> None:
 		'''The process before the upload.'''
 		self.repo.git.add('*')
-		self.repo.git.commit('-m', commit)
+		self.repo.git.commit('-m', message)
 	
 	def uploadProtocol(self) -> None:
 		'''The process of uploading stream's content to the cloud.'''
-		self.repo.git.push('--force')
+		try: self.repo.git.push()
+		except:
+			raiseErr = False
+			cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
+			for thing in _os.listdir(self.session['path']):
+				try:    _sh.move(self.session['path'] + _os.sep + thing, cache)
+				except: pass
+			
+			try: self.repo.git.pull('--force')
+			except Exception as err: raiseErr = err
+
+			for thing in _os.listdir(self.session['path']):
+				try:    _sh.move(cache + _os.sep + thing, self.session['path'])
+				except: pass
+			
+			if not raiseErr:
+				self.bakingProtocol()
+				self.repo.git.push('--force')
+			else: raise raiseErr
+			
 	
 	
 
