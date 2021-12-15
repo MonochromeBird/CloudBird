@@ -32,22 +32,22 @@ baseSession = {
 	'backstage': 'online'
 }
 
+
 class Session:
 	'''A sync task managed by CloudBird.'''
 	def __init__(self, config: dict) -> object:
 		config['stream'] = displayNames.importName(config['stream'])
 		_imp(f'''.services.{config['stream']}''', __package__)
-		self.streamType = eval(f'''_services.{config['stream']}''').Stream
-		self.stream = self.streamType(config['path'], config['url'], config)
-		self.config = config
 		
+		self.stream = eval(f"""_services.{config['stream']}.Stream""")(config, [])
+		self.config = config
 		self.sched = _scheduler()
 	
 	def execute(self) -> None:
 		'''Main session execute.'''
 		date = _datetime.now()
 		self.stream.download()
-		if _compare(self.stream.path):
+		if _compare(self.stream.config['path']):
 			self.stream.bake(self.config['commit'].format(date = date))
 			self.stream.upload()
 		self.sched.enter(self.config['time'], self.config['priority'], self.execute)
@@ -145,4 +145,7 @@ def editSession(id: str, content: dict) -> None:
 	new.append(content)
 	dump(app.appdir.data+_os.sep+'sessions.json', new)
 	del new
-	
+
+def changeState(state: str, session: dict) -> None:
+	session['state'] = state
+	editSession(session['id'], session)

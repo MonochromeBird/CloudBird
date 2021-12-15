@@ -22,12 +22,20 @@ def fileFromDir(path: str) -> str:
 
 def load(path: str, assureIfNotExists: any = []) -> dict:
 	'''Fast loading for data notation.'''
+	try: _mkdir(app.appdir.data+_sep+'jsonbackup')
+	except: pass
+	
 	try:
 		with open(path) as file:
-			return _load(file)
+			v = _load(file)
+			dump(app.appdir.data+_sep+'jsonbackup'+_sep+path.replace(_sep, '_'), v)
+			return v
 	except FileNotFoundError:
 		dump(path, assureIfNotExists)
-		return load(path)
+		return assureIfNotExists
+	except _JSONDecodeError: 
+		with open (app.appdir.data+_sep+'jsonbackup'+_sep+path.replace(_sep, '_')) as file:
+			return _load(file)
 
 def dump(path: str, value: dict) -> int:
 	'''Fast dumping for data notation.'''

@@ -341,6 +341,12 @@ color: rgb(255,  255, 255);
           <property name="autoScroll">
            <bool>true</bool>
           </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
           <property name="textElideMode">
            <enum>Qt::ElideLeft</enum>
           </property>

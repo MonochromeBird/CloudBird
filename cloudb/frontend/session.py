@@ -21,7 +21,22 @@ from ..utils import *
 
 updateDelay = 300
 
-# [ Qt class ]
+# [ Dialog class ]
+class confirmDialog(QDialog):
+	def __init__(self, title: str, message: str) -> object:
+		super().__init__()
+
+		self.setWindowTitle(title)
+		self.options = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+		self.options.accepted.connect(self.accept)
+		self.options.rejected.connect(self.reject)
+		self.layout = QVBoxLayout()
+		self.layout.addWidget(QLabel(message))
+		self.layout.addWidget(self.options)
+		self.setLayout(self.layout)
+	
+
+# [ Main class ]
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super(MainWindow, self).__init__()
@@ -52,8 +67,8 @@ class MainWindow(QMainWindow):
 		}
 
 		self.ui.ClearOutput.pressed.connect(self.deleteLogFile)
-		self.ui.Sessions.itemActivated.connect(self.select)
 		self.ui.Remove.pressed.connect(self.removeSession)
+		self.ui.Sessions.itemClicked.connect(self.select)
 		self.ui.Apply.pressed.connect(self.updateSession)
 		self.ui.Toggle.toggled.connect(self.toggleActive)
 		self.ui.Download.pressed.connect(self.download)
@@ -160,6 +175,7 @@ class MainWindow(QMainWindow):
 		self.ui.Stream.setCurrentIndex(self.ui.Stream.findText(manager.displayNames.fancyName(self.currentSession['stream'])))
 		self.ui.Priority.setValue(self.currentSession['priority'])
 		self.ui.SessionName.setText(self.currentSession['name'] if self.currentSession['name'] else 'New Session')
+		self.ui.Toggle.setChecked(self.currentSession['state'] == 'online')
 		self.ui.Time.setValue(self.currentSession['time'])
 		self.ui.Name.setText(self.currentSession['name'])
 		self.ui.Path.setText(self.currentSession['path'])
@@ -265,18 +281,17 @@ class MainWindow(QMainWindow):
 		self.closeInfo(200)
 		self.closeInfo(201)
 
-		del self.sessions[self.currentSession['id']]
-		new = load(_app.appdir.data+_os.sep+'sessions.json', [])
-		for session in range(len(new)):	
-			if new[session]['id'] == self.currentSession['id']:
-				del new[session]
-				break
-		dump(_app.appdir.data+_os.sep+'sessions.json', new)
-		del new
+		if confirmDialog('Remove session', 'Are you sure that you wanna delete this session???').exec():
+			del self.sessions[self.currentSession['id']]
+			new = load(_app.appdir.data+_os.sep+'sessions.json', [])
+			for session in range(len(new)):	
+				if new[session]['id'] == self.currentSession['id']:
+					del new[session]
+					break
+			dump(_app.appdir.data+_os.sep+'sessions.json', new)
+			del new
 
-		self.ui.Sessions.clear()
-
-	
+			self.ui.Sessions.clear()	
 
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
