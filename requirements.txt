@@ -1,3 +1,4 @@
+shiboken6
 gitpython
 appdirs
 pyside6

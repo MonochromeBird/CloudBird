@@ -2,6 +2,7 @@
 # -*- enconding:utf-8 -*-
 
 # [ 3th party Libraries ]
+from shiboken6 import delete as _sdelete
 from functools import lru_cache
 from datetime import datetime
 from threading import Thread
@@ -49,6 +50,7 @@ class MainWindow(QMainWindow):
 		self.ui.InfoZone.hide()
 
 		self.currentSession = manager.baseSession
+		self.currentItemSelected = None
 		self.currentInfo = 0
 		self.sessions = {}
 
@@ -133,6 +135,7 @@ class MainWindow(QMainWindow):
 		return item
 	
 	def select(self, item: QTreeWidgetItem) -> None:
+		self.currentItemSelected = item
 		sessions = manager.loadSessionsMetaData()
 		self.updateStreams()
 		self.showSessionsDetails()
@@ -277,7 +280,15 @@ class MainWindow(QMainWindow):
 	def removeSession(self) -> None:
 		if self.currentSession['id'] == '':
 			return self.info('Select a session, please.', 'Could not remove session', 200)
+		
 		elif self.currentSession['id'] not in self.sessions:
+
+			if self.currentItemSelected != None:
+				self.ui.SessionW.hide()
+				_sdelete(self.currentItemSelected)
+				self.currentItemSelected = None
+				return
+
 			return self.info('The selected session is not instanciated.', 'Could not remove session', 201)
 	
 		self.closeInfo(200)
@@ -298,6 +309,8 @@ class MainWindow(QMainWindow):
 	def saveSessionAsJson(self) -> None:
 		if self.currentSession['id'] == '':
 			return self.info('Select a session, please.', 'Could not save session', 200)
+		elif self.currentSession['id'] not in self.sessions:
+			return self.info('For preventing crashes, you can only save sessions that are instanciated. To instanciate one, just click in apply.', 'Could not save session', 201)
 		self.updateSession(False, True)
 		dump(QFileDialog.getSaveFileName(self, 'Enter a file name for saving your session', self.currentSession['name'] + '.json' if not self.currentSession['name'].endswith('.json') else self.currentSession['name'], 'JSON files (*.json)')[0], self.currentSession)
 
