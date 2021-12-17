@@ -53,11 +53,10 @@ class Session:
 
 		if self.config['backstage'] == 'online':
 			self.config = loadSessionsMetaData()[self.config['id']]
-			date = _datetime.now()
 			self.stream.download()
 			
 			if _compare(self.config['path']):
-				self.stream.bake(self.config['message'].format(date = date))
+				self.stream.bake()
 				self.stream.upload()
 		
 		

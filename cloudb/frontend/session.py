@@ -269,7 +269,7 @@ class MainWindow(QMainWindow):
 		exit()
 	
 	def _upload(self, session) -> None:
-		session.bake(str(datetime.now()))
+		session.bake()
 		session.upload()
 		exit()
 	

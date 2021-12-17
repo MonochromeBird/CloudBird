@@ -41,7 +41,7 @@ class Clock:
 			self.sched.enter(0, 0, self.exec, (True,))
 			self.sched.run()
 
-		self.sched.enter(1, 0, self.exec, (True,))
+		self.sched.enter(10, 0, self.exec, (True,))
 		self.updateSessions()
 
 clock = Clock()

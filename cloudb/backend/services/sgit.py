@@ -52,7 +52,15 @@ class Stream(BaseStream):
 		'''The process of downloading cloud content to the stream's path.'''
 		err = None
 		cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
+
+		if _os.path.exists(path+_os.sep+'.gitignore'):
+			gitignore = list(map(lambda x: x if not x.endswith(_os.sep) else x[:-1:], read(path+_os.sep+'.gitignore').decode().split('\n')))
+		else:
+			gitignore = []
+
+		_os.mkdir(cache)
 		for thing in _os.listdir(self.session['path']):
+			if thing in gitignore: continue
 			try:    _sh.copy(self.session['path'] + _os.sep + thing, cache)
 			except: pass
 		
@@ -84,19 +92,28 @@ class Stream(BaseStream):
 		except:
 			raiseErr = False
 			cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
+
+			if _os.path.exists(path+_os.sep+'.gitignore'):
+				gitignore = list(map(lambda x: x if not x.endswith(_os.sep) else x[:-1:], read(path+_os.sep+'.gitignore').decode().split('\n')))
+			else:
+				gitignore = []
+			
+			_os.mkdir(cache)
 			for thing in _os.listdir(self.session['path']):
-				try:    _sh.move(self.session['path'] + _os.sep + thing, cache)
+				if thing in gitignore: continue
+				try:    _sh.copy(self.session['path'] + _os.sep + thing, cache)
 				except: pass
 			
 			try: self.repo.git.pull('--force')
 			except Exception as err: raiseErr = err
 
 			for thing in _os.listdir(self.session['path']):
-				try:    _sh.move(cache + _os.sep + thing, self.session['path'])
+				try:    _sh.copy(cache + _os.sep + thing, self.session['path'])
 				except: pass
 			
+			_sh.rmtree(cache)
+			
 			if not raiseErr:
-				self.bakingProtocol()
 				self.repo.git.push('--force')
 			else: raise raiseErr
 			

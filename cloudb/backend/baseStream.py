@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # [ 3th party / builtins modules ]
-from shutil import rmtree as _rmtree, move as _move
 from importlib import import_module as _imp
 from datetime import datetime as _datetime
 from threading import Thread as _Thread
 from random import randint as _randint
+from shutil import rmtree as _rmtree
 import logging as _
 import os as _os
 
@@ -41,7 +41,7 @@ class BaseStream:
 				self.getFromCloud(cache)
 
 				for thing in _os.listdir(cache):
-					try:    _move(cache+_os.sep+thing, self.session['path'])
+					try:    _copy(cache+_os.sep+thing, self.session['path'])
 					except: pass
 				_rmtree(cache)
 				_.info(f'Done downloading at {_datetime.now()}.')
@@ -49,7 +49,7 @@ class BaseStream:
 		except Exception as error:
 			# I could handle this for the case that the path doesn't exists but this is supposed to raise a error anyway :shrugy:
 			_rmtree(cache)
-			_.error(f'Failed downloading at {_datetime.now()}. Details: {error}')
+			_.error(f'Failed downloading at {_datetime.now()}. Details:\n{error}')
 			manager.changeState('error', self.session)
 			raise error
 		
@@ -57,9 +57,10 @@ class BaseStream:
 		manager.changeState(self.session['backstage'], self.session)
 		exit()
 
-	def bake(self, commit: str) -> None:
+	def bake(self) -> None:
 		'''Prepares the upload.'''
 		if self.repo == None: return
+		date = _datetime.now()
 		_.info(f'Baking at {_datetime.now()}.')
 		manager.changeState('baking', self.session)
 
@@ -69,9 +70,9 @@ class BaseStream:
 				addon.bake(self)
 
 		# [ Bakes and handles errors that can potentially happen ]
-		try: self.bakingProtocol(commit)
+		try: self.bakingProtocol(self.session['message'].format(date = date))
 		except Exception as err:
-			_.error(f'Error while baking at {_datetime.now()}. Details: {err}')
+			_.error(f'Error while baking at {_datetime.now()}. Details:\n{err}')
 			return manager.changeState('error', self.session)
 		
 		manager.changeState(self.session['backstage'], self.session)
@@ -91,7 +92,7 @@ class BaseStream:
 		# [ Uploads and handles errors that can potentially happen ]
 		try: self.uploadProtocol()
 		except Exception as err:
-			_.error(f'Error while uploading at {_datetime.now()}. Details: {err}')
+			_.error(f'Error while uploading at {_datetime.now()}. Details:\n{err}')
 			return manager.changeState('error', self.session)
 
 		manager.changeState(self.session['backstage'], self.session)
@@ -112,7 +113,7 @@ class BaseStream:
 		# [ Downloads and handles errors that can potentially happen ]
 		try: self.downloadProtocol()
 		except Exception as err:
-			_.error(f'Error while downloading at {_datetime.now()}. Details: {err}')
+			_.error(f'Error while downloading at {_datetime.now()}. Details:\n{err}')
 			return manager.changeState('error', self.session)
 		
 		manager.changeState(self.session['backstage'], self.session)
