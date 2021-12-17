@@ -254,14 +254,14 @@ class MainWindow(QMainWindow):
 		if self.currentSession['id'] not in self.sessions:
 			return self.info('Canceling download because the selected session its not instanced.')
 		session = self.sessions[self.currentSession['id']].stream
-		thread = Thread(target = self._download, args = (session,), daemon = True) 
+		thread = Thread(target = self._download, args = (session,)) 
 		thread.start()
 
 	def upload(self) -> None:
 		if self.currentSession['id'] not in self.sessions:
 			return self.info('Canceling upload because the selected session its not instanced.')
 		session = self.sessions[self.currentSession['id']].stream
-		thread = Thread(target = self._upload, args = (session,), daemon = True)
+		thread = Thread(target = self._upload, args = (session,))
 		thread.start()
 	
 	def _download(self, session) -> None:
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
 		except: pass
 	
 	def removeSession(self) -> None:
-		if self.currentSession['id'] == '':
+		if not self.currentSession['id']:
 			return self.info('Select a session, please.', 'Could not remove session', 200)
 		
 		elif self.currentSession['id'] not in self.sessions:
@@ -287,6 +287,8 @@ class MainWindow(QMainWindow):
 				self.ui.SessionW.hide()
 				_sdelete(self.currentItemSelected)
 				self.currentItemSelected = None
+				self.ui.Sessions.setCurrentItem(self.ui.Sessions.invisibleRootItem())
+				self.currentSession = manager.baseSession
 				return
 
 			return self.info('The selected session is not instanciated.', 'Could not remove session', 201)
@@ -303,8 +305,15 @@ class MainWindow(QMainWindow):
 					break
 			dump(_app.appdir.data+_os.sep+'sessions.json', new)
 			del new
+			self.ui.Sessions.setCurrentItem(self.ui.Sessions.invisibleRootItem())
+			self.currentSession = manager.baseSession
+			self.ui.SessionW.hide()
+			_sdelete(self.currentItemSelected)
+			self.currentItemSelected = None
+			self.ui.Sessions.setCurrentItem(self.ui.Sessions.invisibleRootItem())
+			self.currentSession = manager.baseSession
+		
 
-			self.ui.Sessions.clear()	
 	
 	def saveSessionAsJson(self) -> None:
 		if self.currentSession['id'] == '':

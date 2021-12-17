@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from os.path import abspath as _abspath, dirname as _dirname
+from os.path import abspath as _abspath, dirname as _dirname, exists as _exists
 from os import walk as _walk, sep as _sep, mkdir as _mkdir
 from hashlib import sha3_256 as _sha
 from .. import app as _app
@@ -24,8 +24,8 @@ def compare(path: str) -> bool:
 	currentHash = hashText(hashTree(path))
 	pastHash 	= None
 
-	if not exists(hashFile):
-		if not exists(_dirname(hashFile)):
+	if not _exists(hashFile):
+		if not _exists(_dirname(hashFile)):
 			_mkdir(_dirname(hashFile))
 		else:
 			write(hashFile, currentHash.encode())

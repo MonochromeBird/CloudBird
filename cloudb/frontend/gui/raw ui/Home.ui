@@ -344,6 +344,9 @@ color: rgb(255,  255, 255);
           <property name="editTriggers">
            <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed</set>
           </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::MultiSelection</enum>
+          </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>

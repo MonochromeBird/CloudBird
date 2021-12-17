@@ -50,10 +50,28 @@ class Stream(BaseStream):
 	
 	def downloadProtocol(self) -> None:
 		'''The process of downloading cloud content to the stream's path.'''
-		try: self.repo.git.pull()
-		except:
-			self.repo.git.fetch('--all')
-			self.repo.git.reset('--hard', 'master')
+		err = None
+		cache = app.appdir.cache+_os.sep+str(_randint(100000,999999))
+		for thing in _os.listdir(self.session['path']):
+			try:    _sh.copy(self.session['path'] + _os.sep + thing, cache)
+			except: pass
+		
+		try:
+			try:
+				self.repo.git.pull('--force')
+			except:
+				self.repo.git.fetch('--all')
+				self.repo.git.reset('--hard', 'master')
+		except Exception as error:
+			err = error
+		
+		for thing in _os.listdir(self.session['path']):
+			try:    _sh.copy(cache + _os.sep + thing, self.session['path'])
+			except: pass
+		
+		_sh.rmtree(cache)
+		
+		if err: raise err
 	
 	def bakingProtocol(self, message: str) -> None:
 		'''The process before the upload.'''

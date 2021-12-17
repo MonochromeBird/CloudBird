@@ -29,9 +29,9 @@ baseSession = {
 	'time':      1800,
 	'priority':  0,
 	'addons':    [],
-	'backstage': 'online'
+	'message':   '{date}',
+	'backstage': 'online',
 }
-
 
 class Session:
 	'''A sync task managed by CloudBird.'''
@@ -40,18 +40,26 @@ class Session:
 		_imp(f'''.services.{config['stream']}''', __package__)
 		
 		self.stream = eval(f"""_services.{config['stream']}.Stream""")(config, [])
-		self.config = config
 		self.sched = _scheduler()
+		self.config = config
 	
-	def execute(self) -> None:
+	def execute(self, ignore: bool = False) -> None:
 		'''Main session execute.'''
-		date = _datetime.now()
-		self.stream.download()
-		if _compare(self.stream.config['path']):
-			self.stream.bake(self.config['commit'].format(date = date))
-			self.stream.upload()
-		self.sched.enter(self.config['time'], self.config['priority'], self.execute)
-		self.sched.run()
+		if not ignore:
+			self.sched.enter(0, 0, self.execute, (True,))
+			self.sched.run()
+
+		self.sched.enter(self.config['time'], self.config['priority'], self.execute, (True,))
+
+		if self.config['backstage'] == 'online':
+			self.config = loadSessionsMetaData()[self.config['id']]
+			date = _datetime.now()
+			self.stream.download()
+			
+			if _compare(self.config['path']):
+				self.stream.bake(self.config['message'].format(date = date))
+				self.stream.upload()
+		
 		
 def loadSessions() -> dict:
 	'''Instanciate sessions'''
@@ -70,40 +78,6 @@ def createSession(info: dict) -> int:
 	if not info['id'] in list(map(lambda x: x['id'], data)):
 		return dump(app.appdir.data + _os.sep + 'sessions.json', data + [info])
 	return 700
-
-class Clock:
-	'''The main clock of cloudb.'''
-	def __init__(self) -> object:
-		self.sessions = loadSessions()
-		self.threads  = {}
-		self.queryThreads(self.sessions)
-
-	def startAll(self) -> None:
-		'''Starts every thread.'''
-		for thread in self.threads:
-			self.threads[thread].start()
-	
-	def stopAll(self) -> None:
-		'''Stops every thread.'''
-		for thread in self.threads:
-			self.threads[thread]._stop()
-			del     self.threads[thread]
-			self.queryThreads([self.sessions[thread]])
-	
-	def start(self, id: str) -> None:
-		'''Starts a single session thread.'''
-		self.threads[id].start()
-	
-	def stop(self, id: str) -> None:
-		'''Stops a single session thread.'''
-		self.threads[id]._stop()
-		del     self.threads[id]
-		self.queryThreads([self.sessions[id]])
-	
-	def queryThreads(self, sessions: list) -> None:
-		'''Create threads for sessions.'''
-		for session in sessions:
-			self.threads[session.config['id']] = _Thread(target = session.execute)
 
 class displayNames:
 	def __init__(self) -> object:
